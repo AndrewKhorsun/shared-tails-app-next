@@ -1,26 +1,21 @@
-import { AuthForm } from "./auth-form";
+import { BookOpen } from "lucide-react";
+import { AuthForm } from "@/components/auth/auth-form";
 
 export default function LoginPage() {
+  const features = [
+    "AI agents that think, outline, and write",
+    "Real-time collaboration with co-authors",
+    "Every chapter, your voice",
+    "From concept to finished manuscript",
+  ];
+
   return (
     <div className="flex min-h-screen">
       <div className="hidden md:flex w-[45%] bg-canvas border-r border-border-soft flex-col items-center justify-center p-14 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_45%,rgba(107,140,122,0.07)_0%,transparent_70%)] pointer-events-none" />
 
         <div className="flex items-center gap-2.5 mb-12 relative z-10">
-          <svg className="w-8 h-8 text-sage" viewBox="0 0 32 32" fill="none">
-            <path
-              d="M16 4C16 4 8 8 8 16C8 24 16 28 16 28C16 28 24 24 24 16C24 8 16 4 16 4Z"
-              stroke="currentColor"
-              strokeWidth="1.2"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M16 4L16 28M8 12H24M8 20H24"
-              stroke="currentColor"
-              strokeWidth="0.8"
-              opacity="0.5"
-            />
-          </svg>
+          <BookOpen className="w-8 h-8 text-sage" strokeWidth={1.2} />
           <span className="font-sans text-base font-medium text-parchment tracking-wide">
             Shared Tails
           </span>
@@ -36,12 +31,7 @@ export default function LoginPage() {
           </p>
 
           <ul className="text-left inline-block space-y-2.5">
-            {[
-              "AI agents that think, outline, and write",
-              "Real-time collaboration with co-authors",
-              "Every chapter, your voice",
-              "From concept to finished manuscript",
-            ].map((feature) => (
+            {features.map((feature) => (
               <li
                 key={feature}
                 className="flex items-center gap-2.5 text-[13px] font-light text-fog"

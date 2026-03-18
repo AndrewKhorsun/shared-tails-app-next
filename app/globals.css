@@ -1,10 +1,5 @@
 @import "tailwindcss";
 
-/*
-  Кастомна тема для Tailwind v4.
-  @theme inline дозволяє використовувати ці значення як Tailwind класи.
-  Наприклад: bg-canvas, text-parchment, border-border-soft
-*/
 @theme inline {
   --color-canvas: #1A2418;
   --color-page: #1E2B1C;
