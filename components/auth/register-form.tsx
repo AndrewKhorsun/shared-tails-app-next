@@ -25,7 +25,9 @@ export function RegisterForm() {
       {/* Name row */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
-          <label className="block text-xs text-fog mb-1.5 tracking-wide">First name</label>
+          <label className="block text-xs text-fog mb-1.5 tracking-wide">
+            First name
+          </label>
           <input
             type="text"
             placeholder="Elena"
@@ -33,7 +35,9 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="block text-xs text-fog mb-1.5 tracking-wide">Last name</label>
+          <label className="block text-xs text-fog mb-1.5 tracking-wide">
+            Last name
+          </label>
           <input
             type="text"
             placeholder="Cross"
@@ -44,7 +48,9 @@ export function RegisterForm() {
 
       {/* Email */}
       <div className="mb-4">
-        <label className="block text-xs text-fog mb-1.5 tracking-wide">Email address</label>
+        <label className="block text-xs text-fog mb-1.5 tracking-wide">
+          Email address
+        </label>
         <input
           type="email"
           placeholder="you@example.com"
@@ -52,44 +58,52 @@ export function RegisterForm() {
         />
       </div>
 
-      {/* Password */}
-      <div className="mb-4">
-        <label className="block text-xs text-fog mb-1.5 tracking-wide">Password</label>
-        <div className="relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-            onInput={(e) => checkStrength((e.target as HTMLInputElement).value)}
-            className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 pr-10 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-fog p-1 cursor-pointer"
-          >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
+      <div className="flex gap-3">
+        {/* Password */}
+        <div className="mb-4 flex-1">
+          <label className="block text-xs text-fog mb-1.5 tracking-wide">
+            Password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              onInput={(e) =>
+                checkStrength((e.target as HTMLInputElement).value)
+              }
+              className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 pr-10 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-fog p-1 cursor-pointer"
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+          {/* Strength bar */}
+          <div className="h-[3px] bg-elevated rounded-sm mt-2 overflow-hidden">
+            <div
+              className={`h-full rounded-sm transition-all duration-300 ${
+                passwordStrength > 0
+                  ? `${strengthWidths[passwordStrength - 1]} ${strengthColors[passwordStrength - 1]}`
+                  : "w-0"
+              }`}
+            />
+          </div>
         </div>
-        {/* Strength bar */}
-        <div className="h-[3px] bg-elevated rounded-sm mt-2 overflow-hidden">
-          <div
-            className={`h-full rounded-sm transition-all duration-300 ${
-              passwordStrength > 0
-                ? `${strengthWidths[passwordStrength - 1]} ${strengthColors[passwordStrength - 1]}`
-                : "w-0"
-            }`}
-          />
-        </div>
-      </div>
 
-      {/* Confirm password */}
-      <div className="mb-4">
-        <label className="block text-xs text-fog mb-1.5 tracking-wide">Confirm password</label>
-        <input
-          type="password"
-          placeholder="••••••••"
-          className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
-        />
+        {/* Confirm password */}
+        <div className="mb-4 flex-1">
+          <label className="block text-xs text-fog mb-1.5 tracking-wide">
+            Confirm password
+          </label>
+          <input
+            type="password"
+            placeholder="••••••••"
+            className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
+          />
+        </div>
       </div>
 
       {/* Terms checkbox */}
@@ -98,9 +112,19 @@ export function RegisterForm() {
         <span className="w-4 h-4 bg-input border border-border-mid rounded flex items-center justify-center shrink-0 peer-checked:border-border-active peer-checked:bg-amber/15" />
         <span>
           I agree to the{" "}
-          <a href="#" className="text-amber-dim hover:text-amber transition-colors">Terms</a>
-          {" "}and{" "}
-          <a href="#" className="text-amber-dim hover:text-amber transition-colors">Privacy Policy</a>
+          <a
+            href="#"
+            className="text-amber-dim hover:text-amber transition-colors"
+          >
+            Terms
+          </a>{" "}
+          and{" "}
+          <a
+            href="#"
+            className="text-amber-dim hover:text-amber transition-colors"
+          >
+            Privacy Policy
+          </a>
         </span>
       </label>
 
