@@ -1,0 +1,59 @@
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+const API_URL = process.env.API_URL || "http://localhost:3000";
+
+export async function POST(request: Request) {
+  const { email, password, first_name, last_name } = await request.json();
+
+  if (!email || !password || !first_name || !last_name) {
+    return NextResponse.json(
+      { error: "All fields are required" },
+      { status: 400 }
+    );
+  }
+
+  // 1. Register
+  const registerRes = await fetch(`${API_URL}/api/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, first_name, last_name }),
+  });
+
+  const registerData = await registerRes.json();
+
+  if (!registerRes.ok) {
+    return NextResponse.json(
+      { error: registerData.error || "Registration failed" },
+      { status: registerRes.status }
+    );
+  }
+
+  // 2. Auto-login — backend register does not return a token
+  const loginRes = await fetch(`${API_URL}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const loginData = await loginRes.json();
+
+  if (!loginRes.ok) {
+    return NextResponse.json(
+      { error: loginData.error || "Auto-login failed" },
+      { status: loginRes.status }
+    );
+  }
+
+  // 3. Set cookie
+  const cookieStore = await cookies();
+  cookieStore.set("token", loginData.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24,
+  });
+
+  return NextResponse.json({ user: loginData.user });
+}

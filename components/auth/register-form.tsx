@@ -1,12 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { OAuthButtons } from "./oauth-buttons";
+import { api } from "@/lib/api";
+import type { AuthResponse } from "@/types";
 
 export function RegisterForm() {
+  const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function checkStrength(value: string) {
     let score = 0;
@@ -20,8 +31,41 @@ export function RegisterForm() {
   const strengthColors = ["bg-rust", "bg-[#8B6F5C]", "bg-moss", "bg-sage"];
   const strengthWidths = ["w-1/4", "w-1/2", "w-3/4", "w-full"];
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+
+    const { error: apiError } = await api.post<AuthResponse>(
+      "/api/auth/register",
+      { email, password, first_name: firstName, last_name: lastName }
+    );
+
+    setLoading(false);
+
+    if (apiError) {
+      setError(apiError);
+      return;
+    }
+
+    router.push("/books");
+  }
+
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={handleSubmit}>
+      {/* Error message */}
+      {error && (
+        <div className="mb-4 p-3 rounded-lg bg-rust/10 border border-rust/30 text-sm text-rust">
+          {error}
+        </div>
+      )}
+
       {/* Name row */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
@@ -30,6 +74,8 @@ export function RegisterForm() {
           </label>
           <input
             type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             placeholder="Elena"
             className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
           />
@@ -40,6 +86,8 @@ export function RegisterForm() {
           </label>
           <input
             type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             placeholder="Cross"
             className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
           />
@@ -53,6 +101,8 @@ export function RegisterForm() {
         </label>
         <input
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
         />
@@ -67,10 +117,12 @@ export function RegisterForm() {
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                checkStrength(e.target.value);
+              }}
               placeholder="••••••••"
-              onInput={(e) =>
-                checkStrength((e.target as HTMLInputElement).value)
-              }
               className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 pr-10 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
             />
             <button
@@ -100,6 +152,8 @@ export function RegisterForm() {
           </label>
           <input
             type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="••••••••"
             className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
           />
@@ -112,17 +166,11 @@ export function RegisterForm() {
         <span className="w-4 h-4 bg-input border border-border-mid rounded flex items-center justify-center shrink-0 peer-checked:border-border-active peer-checked:bg-amber/15" />
         <span>
           I agree to the{" "}
-          <a
-            href="#"
-            className="text-amber-dim hover:text-amber transition-colors"
-          >
+          <a href="#" className="text-amber-dim hover:text-amber transition-colors">
             Terms
           </a>{" "}
           and{" "}
-          <a
-            href="#"
-            className="text-amber-dim hover:text-amber transition-colors"
-          >
+          <a href="#" className="text-amber-dim hover:text-amber transition-colors">
             Privacy Policy
           </a>
         </span>
@@ -131,9 +179,10 @@ export function RegisterForm() {
       {/* Submit */}
       <button
         type="submit"
-        className="w-full h-[46px] bg-amber text-canvas rounded-[10px] text-[15px] font-medium mt-6 cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide"
+        disabled={loading}
+        className="w-full h-[46px] bg-amber text-canvas rounded-[10px] text-[15px] font-medium mt-6 cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Create account
+        {loading ? "Creating account..." : "Create account"}
       </button>
 
       <OAuthButtons />

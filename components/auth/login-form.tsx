@@ -1,14 +1,49 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Check } from "lucide-react";
 import { OAuthButtons } from "./oauth-buttons";
+import { api } from "@/lib/api";
+import type { AuthResponse } from "@/types";
 
 export function LoginForm() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const { error: apiError } = await api.post<AuthResponse>(
+      "/api/auth/login",
+      { email, password }
+    );
+
+    setLoading(false);
+
+    if (apiError) {
+      setError(apiError);
+      return;
+    }
+
+    router.push("/books");
+  }
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={handleSubmit}>
+      {/* Error message */}
+      {error && (
+        <div className="mb-4 p-3 rounded-lg bg-rust/10 border border-rust/30 text-sm text-rust">
+          {error}
+        </div>
+      )}
+
       {/* Email */}
       <div className="mb-4">
         <label className="block text-xs text-fog mb-1.5 tracking-wide">
@@ -16,6 +51,8 @@ export function LoginForm() {
         </label>
         <input
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
         />
@@ -29,6 +66,8 @@ export function LoginForm() {
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             className="w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 pr-10 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]"
           />
@@ -59,9 +98,10 @@ export function LoginForm() {
       {/* Submit */}
       <button
         type="submit"
-        className="w-full h-[46px] bg-amber text-canvas rounded-[10px] text-[15px] font-medium mt-6 cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide"
+        disabled={loading}
+        className="w-full h-[46px] bg-amber text-canvas rounded-[10px] text-[15px] font-medium mt-6 cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Sign in
+        {loading ? "Signing in..." : "Sign in"}
       </button>
 
       <OAuthButtons />
