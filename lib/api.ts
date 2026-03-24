@@ -21,10 +21,13 @@ async function request<T>(
     const data = await res.json();
 
     if (!res.ok) {
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return { data: null, error: "Session expired" };
+      }
+
       const message = data.error || `Request failed with status ${res.status}`;
-
       console.error(`[API ${method} ${path}]`, message);
-
       return { data: null, error: message };
     }
 

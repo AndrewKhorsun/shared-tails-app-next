@@ -10,7 +10,7 @@ export function AuthForm() {
   const isLogin = activeTab === "login";
 
   return (
-    <div className="w-full max-w-[380px] animate-[fadeUp_0.5s_cubic-bezier(0.22,1,0.36,1)_both]">
+    <div className="w-full max-w-95 animate-[fadeUp_0.5s_cubic-bezier(0.22,1,0.36,1)_both]">
       {/* Title */}
       <h1 className="font-serif text-[28px] text-parchment mb-1.5">
         {isLogin ? "Welcome back" : "Start writing"}
