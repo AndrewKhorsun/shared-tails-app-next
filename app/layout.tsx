@@ -2,13 +2,6 @@ import type { Metadata } from "next";
 import { DM_Sans, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-/*
-  next/font/google — Next.js завантажує шрифти на етапі збірки
-  і хостить їх локально. Браузер НЕ робить запит до fonts.googleapis.com.
-
-  variable: "--font-xxx" — створює CSS змінну, яку ми прив'язали
-  в globals.css через @theme inline до Tailwind класів (font-sans, font-serif, font-mono)
-*/
 const dmSans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
