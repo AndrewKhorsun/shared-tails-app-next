@@ -1,11 +1,9 @@
-type ApiResult<T> =
-  | { data: T; error: null }
-  | { data: null; error: string };
+type ApiResult<T> = { data: T; error: null } | { data: null; error: string };
 
 async function request<T>(
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   path: string,
-  body?: unknown
+  body?: unknown,
 ): Promise<ApiResult<T>> {
   try {
     const options: RequestInit = {
@@ -22,7 +20,6 @@ async function request<T>(
 
     if (!res.ok) {
       if (res.status === 401) {
-        window.location.href = "/login";
         return { data: null, error: "Session expired" };
       }
 
