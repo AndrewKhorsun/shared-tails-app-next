@@ -1,6 +1,6 @@
 import z from "zod";
 
-const characterSchema = z.object({
+export const characterSchema = z.object({
   name: z.string().min(1),
   role: z.enum(["protagonist", "antagonist", "supporting"]),
   description: z.string().min(1),
