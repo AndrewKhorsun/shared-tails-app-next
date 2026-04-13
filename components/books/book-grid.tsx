@@ -1,5 +1,6 @@
 import { Book } from "@/types";
 import { BookCard } from "./book-card";
+import { CreateBookModal } from "./create-book-modal";
 
 interface BookGridProps {
   books: Book[];
@@ -12,10 +13,7 @@ export function BookGrid({ books }: BookGridProps) {
         <BookCard key={book.id} book={book} />
       ))}
 
-      <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-surface hover:bg-elevated transition-colors text-fog hover:text-parchment border border-dashed border-fog/20 hover:border-fog/40 min-h-[120px]">
-        <span className="text-2xl leading-none">+</span>
-        <span className="text-sm font-light">New Book</span>
-      </button>
+      <CreateBookModal />
     </div>
   );
 }
