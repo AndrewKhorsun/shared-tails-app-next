@@ -8,12 +8,10 @@ interface BookViewProps {
 export function BookView({ book }: BookViewProps) {
   return (
     <div className="flex flex-col gap-8">
-      <Link href="/books" className="text-sm text-fog hover:text-parchment transition-colors w-fit">
-        ← Back to books
-      </Link>
-
       <div className="flex flex-col gap-2">
-        <h1 className="font-serif text-parchment text-3xl leading-snug">{book.title}</h1>
+        <h1 className="font-serif text-parchment text-3xl leading-snug">
+          {book.title}
+        </h1>
         <div className="flex items-center gap-3 text-sm text-fog font-light">
           <span>{book.author_name}</span>
           <span>·</span>
