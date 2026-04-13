@@ -13,7 +13,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // 1. Register
   const registerRes = await fetch(`${API_URL}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -29,7 +28,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // 2. Auto-login — backend register does not return a token
   const loginRes = await fetch(`${API_URL}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -45,7 +43,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // 3. Set cookie
   const cookieStore = await cookies();
   cookieStore.set("token", loginData.token, {
     httpOnly: true,
