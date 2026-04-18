@@ -6,7 +6,7 @@ fi
 
 echo "Running Claude pre-commit review..."
 
-REVIEW=$(git diff --cached | claude --print "Review these staged changes.
+REVIEW=$(git diff --cached | claude --print --model claude-haiku-4-5-20251001 "Review these staged changes.
 
 Check for:
 1. Obvious bugs or broken logic
