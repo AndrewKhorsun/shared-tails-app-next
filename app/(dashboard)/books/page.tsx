@@ -1,6 +1,7 @@
 import { serverApi } from "@/lib/server-api";
 import { BooksResponse } from "@/types/books";
 import { BookGrid } from "@/components/books/book-grid";
+import { CreateBookModal } from "@/components/books/create-book-modal";
 
 export default async function BooksPage() {
   const { data, error } = await serverApi.get<BooksResponse>("/api/books");
@@ -14,6 +15,7 @@ export default async function BooksPage() {
       <div className="flex flex-col items-center justify-center py-24 gap-3 text-center">
         <p className="font-serif text-parchment text-xl">No books yet</p>
         <p className="text-fog text-sm font-light">You haven&apos;t written anything yet — start your first story.</p>
+        <CreateBookModal />
       </div>
     );
   }
