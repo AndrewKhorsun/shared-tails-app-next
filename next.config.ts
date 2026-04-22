@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  transpilePackages: ["@mdxeditor/editor"],
+  serverExternalPackages: ["@mdxeditor/editor"],
 };
 
 export default nextConfig;
