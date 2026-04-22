@@ -31,6 +31,53 @@ body {
   font-family: var(--font-sans);
 }
 
+.mdxeditor {
+  --accentBase: #6B8C7A;
+  --accentBgSubtle: #263523;
+  --accentBg: #2E3D2B;
+  --accentBgHover: #344530;
+  --accentBgActive: #3a4d34;
+  --accentLine: #6B8C7A;
+  --accentBorder: #6B8C7A;
+  --accentBorderHover: #9DB898;
+  --accentSolid: #6B8C7A;
+  --accentSolidHover: #9DB898;
+  --accentText: #9DB898;
+  --accentTextContrast: #E8D5AA;
+
+  --baseBase: #1A2418;
+  --baseBgSubtle: #1E2B1C;
+  --baseBg: #1E2B1C;
+  --baseBgHover: #263523;
+  --baseBgActive: #2E3D2B;
+  --baseLine: #2E3D2B;
+  --baseBorder: rgba(232,213,170,0.10);
+  --baseBorderHover: rgba(232,213,170,0.20);
+  --baseSolid: #6B8C7A;
+  --baseSolidHover: #9DB898;
+  --baseText: #E8D5AA;
+  --baseTextContrast: #E8D5AA;
+
+  color: #E8D5AA !important;
+  background: #1E2B1C !important;
+}
+
+.mdxeditor [contenteditable],
+.mdxeditor p,
+.mdxeditor h1,
+.mdxeditor h2,
+.mdxeditor h3,
+.mdxeditor h4,
+.mdxeditor li,
+.mdxeditor blockquote {
+  color: #E8D5AA !important;
+}
+
+.mdxeditor-toolbar {
+  background: #263523 !important;
+  border-bottom: 1px solid rgba(232,213,170,0.10) !important;
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }

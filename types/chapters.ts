@@ -14,3 +14,10 @@ export interface ChaptersResponse {
   chapters: Chapter[];
   total: number;
 }
+
+export interface CreateChapter {
+  title: string;
+  content?: string;
+  order_index?: number;
+  plan?: string;
+}
