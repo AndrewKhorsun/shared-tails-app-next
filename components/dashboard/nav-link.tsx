@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, LucideIcon, ScrollText } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip";
 
 interface NavLinkProps {
