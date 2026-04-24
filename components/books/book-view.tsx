@@ -13,12 +13,6 @@ export function BookView({ book }: BookViewProps) {
           <h1 className="font-serif text-parchment text-3xl leading-snug">
             {book.title}
           </h1>
-          <Link
-            href={`/books/${book.id}/book-plan`}
-            className="shrink-0 h-9 px-4 flex items-center rounded-[10px] border border-border-soft text-sm text-fog hover:text-parchment hover:border-border-active transition-all"
-          >
-            Book plan
-          </Link>
         </div>
         <div className="flex items-center gap-3 text-sm text-fog font-light">
           <span>{book.author_name}</span>
