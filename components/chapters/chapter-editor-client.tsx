@@ -10,7 +10,6 @@ import {
   linkPlugin,
   linkDialogPlugin,
   tablePlugin,
-  diffSourcePlugin,
   toolbarPlugin,
   BoldItalicUnderlineToggles,
   BlockTypeSelect,
@@ -20,7 +19,6 @@ import {
   CreateLink,
   InsertTable,
   InsertThematicBreak,
-  DiffSourceToggleWrapper,
   StrikeThroughSupSubToggles,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
@@ -47,7 +45,6 @@ export default function ChapterEditorClient({ onSave, isDirty, saveState, ...pro
               <InsertTable />
               <InsertThematicBreak />
               <Separator />
-              <DiffSourceToggleWrapper />
               {onSave && (
                 <button
                   onClick={onSave}
@@ -67,7 +64,6 @@ export default function ChapterEditorClient({ onSave, isDirty, saveState, ...pro
         linkPlugin(),
         linkDialogPlugin(),
         tablePlugin(),
-        diffSourcePlugin({ viewMode: "rich-text" }),
         markdownShortcutPlugin(),
       ]}
     />
