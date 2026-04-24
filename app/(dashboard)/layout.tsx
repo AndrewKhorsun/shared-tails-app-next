@@ -19,10 +19,10 @@ export default async function DashboardLayout({
     <div className="min-h-screen flex flex-col">
       <TopNav user={user} />
       <div className="flex-1 flex">
-        <aside className="w-64 bg-surface p-6">
+        <aside className="w-12 sm:w-64 bg-surface border-r border-border-soft p-3 sm:p-6 shrink-0">
           <DashboardSidebar />
         </aside>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 min-w-0 bg-elevated">{children}</main>
       </div>
     </div>
   );

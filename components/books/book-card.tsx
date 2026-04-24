@@ -9,13 +9,13 @@ export function BookCard({ book }: BookCardProps) {
   return (
     <Link
       href={`/books/${book.id}`}
-      className="group flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-elevated transition-colors"
+      className="group flex flex-col gap-2 p-4 rounded-xl bg-elevated border border-border-soft hover:bg-card hover:border-border-mid transition-colors"
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-serif text-parchment text-base leading-snug group-hover:text-amber transition-colors line-clamp-2">
           {book.title}
         </h3>
-        <span className="shrink-0 text-xs text-fog bg-elevated group-hover:bg-surface transition-colors rounded-full px-2 py-0.5">
+        <span className="shrink-0 text-xs text-fog bg-surface group-hover:bg-elevated transition-colors rounded-full px-2 py-0.5">
           ★ {parseFloat(book.rating).toFixed(1)}
         </span>
       </div>

@@ -7,17 +7,26 @@ import {
   quotePlugin,
   thematicBreakPlugin,
   markdownShortcutPlugin,
+  linkPlugin,
+  linkDialogPlugin,
+  tablePlugin,
+  diffSourcePlugin,
   toolbarPlugin,
   BoldItalicUnderlineToggles,
   BlockTypeSelect,
   ListsToggle,
   Separator,
   UndoRedo,
-  type MDXEditorProps,
+  CreateLink,
+  InsertTable,
+  InsertThematicBreak,
+  DiffSourceToggleWrapper,
+  StrikeThroughSupSubToggles,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
+import type { ChapterEditorProps } from "./chapter-editor";
 
-export default function ChapterEditorClient(props: MDXEditorProps) {
+export default function ChapterEditorClient({ onSave, isDirty, saveState, ...props }: ChapterEditorProps) {
   return (
     <MDXEditor
       {...props}
@@ -28,10 +37,26 @@ export default function ChapterEditorClient(props: MDXEditorProps) {
               <UndoRedo />
               <Separator />
               <BoldItalicUnderlineToggles />
+              <StrikeThroughSupSubToggles />
               <Separator />
               <BlockTypeSelect />
               <Separator />
               <ListsToggle />
+              <Separator />
+              <CreateLink />
+              <InsertTable />
+              <InsertThematicBreak />
+              <Separator />
+              <DiffSourceToggleWrapper />
+              {onSave && (
+                <button
+                  onClick={onSave}
+                  disabled={!isDirty || saveState === "saving"}
+                  className="ml-auto px-3 py-1 text-sm rounded transition-colors bg-moss text-canvas disabled:opacity-30 enabled:hover:bg-sage"
+                >
+                  {saveState === "saving" ? "Saving..." : saveState === "saved" ? "Saved" : "Save"}
+                </button>
+              )}
             </>
           ),
         }),
@@ -39,6 +64,10 @@ export default function ChapterEditorClient(props: MDXEditorProps) {
         listsPlugin(),
         quotePlugin(),
         thematicBreakPlugin(),
+        linkPlugin(),
+        linkDialogPlugin(),
+        tablePlugin(),
+        diffSourcePlugin({ viewMode: "rich-text" }),
         markdownShortcutPlugin(),
       ]}
     />
