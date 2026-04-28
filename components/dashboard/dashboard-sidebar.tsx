@@ -85,7 +85,7 @@ export function DashboardSidebar({ bookId }: { bookId: string }) {
 
       <div className="flex flex-col gap-0.5">
         {chapters.map((chapter) => (
-          <ChapterLink key={chapter.id} chapter={chapter} bookId={bookId} />
+          <ChapterLink key={chapter.id} chapter={chapter} bookId={bookId} onRefresh={fetchChapters} />
         ))}
       </div>
 

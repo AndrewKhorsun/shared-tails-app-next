@@ -59,24 +59,14 @@ export function BookCard({ book }: BookCardProps) {
           </button>
         </div>
 
-        <Link href={`/books/${book.id}`} className="flex flex-col gap-2">
-          <div className="flex items-start justify-between gap-2 pr-14">
-            <h3 className="font-serif text-parchment text-base leading-snug group-hover:text-amber transition-colors line-clamp-2">
-              {book.title}
-            </h3>
-            <span className="shrink-0 text-xs text-fog bg-surface group-hover:bg-elevated transition-colors rounded-full px-2 py-0.5">
-              ★ {parseFloat(book.rating).toFixed(1)}
-            </span>
-          </div>
+        <Link href={`/books/${book.id}`} className="flex flex-col gap-2 min-h-35">
+          <h3 className="font-serif text-parchment text-base leading-snug group-hover:text-amber transition-colors line-clamp-2 pr-14">
+            {book.title}
+          </h3>
 
-          <p className="text-sm font-light text-fog line-clamp-2 leading-relaxed">
+          <p className="text-sm font-light text-fog line-clamp-3 leading-relaxed">
             {book.description}
           </p>
-
-          <div className="flex items-center justify-between mt-auto pt-2 text-xs text-fog/60">
-            <span>{book.author_name}</span>
-            <span>{book.views} views</span>
-          </div>
         </Link>
       </div>
 
