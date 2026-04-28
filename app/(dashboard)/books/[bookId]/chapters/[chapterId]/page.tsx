@@ -2,6 +2,7 @@ import { serverApi } from "@/lib/server-api";
 import { Chapter } from "@/types";
 import { notFound } from "next/navigation";
 import { ChapterContent } from "@/components/chapters/chapter-content";
+import { ChapterView } from "@/components/chapters/chapter-view";
 
 interface BookPageProps {
   params: Promise<{ bookId: string; chapterId: string }>;
@@ -25,7 +26,7 @@ export default async function ChapterPage({ params }: BookPageProps) {
   return (
     <div className="flex gap-4 flex-col">
       <h1>{chapter.title}</h1>
-      <ChapterContent
+      <ChapterView
         bookId={bookId}
         chapterId={chapterId}
         initialContent={chapter.content}
