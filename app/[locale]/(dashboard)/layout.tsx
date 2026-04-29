@@ -3,6 +3,7 @@ import { TopNav } from "@/components/dashboard/topnav";
 import { User } from "@/types/auth";
 import { serverApi } from "@/lib/server-api";
 import { SocketProvider } from "@/components/dashboard/socket-provider";
+import { getLocale } from "next-intl/server";
 
 export default async function DashboardLayout({
   children,
@@ -11,7 +12,8 @@ export default async function DashboardLayout({
 }) {
   const { data, error } = await serverApi.get<{ user: User }>("/api/auth/me");
   if (error || !data) {
-    redirect("/login");
+    const locale = await getLocale();
+    redirect(`/${locale}/login`);
   }
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,7 +13,7 @@ import { upperCaseFirstLetter } from "@/lib/utils";
 import { BookPlan } from "@/types";
 import { api } from "@/lib/api";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { CharacterModal } from "./character-modal";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
@@ -61,6 +62,7 @@ interface BookPlanFormProps {
 }
 
 export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
+  const t = useTranslations("BookPlanForm");
   const router = useRouter();
   const [characterEditingIndex, setCharacterEditingIndex] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -119,7 +121,7 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
       reset(data);
       router.refresh();
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : "Failed to save");
+      setSaveError(err instanceof Error ? err.message : t("failedToSave"));
     } finally {
       setIsSaving(false);
     }
@@ -132,18 +134,18 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
         {/* Main */}
         <section className="space-y-6">
           <SectionHeading
-            title="Main"
-            tooltip="Basic parameters that shape the overall tone and direction of the book. They are passed to the AI on every chapter generation."
+            title={t("sections.main")}
+            tooltip={t("sections.mainTooltip")}
           />
 
           <div>
             <FieldLabel
-              label="Genre"
-              tooltip="Defines the narrative framework. Affects vocabulary, pacing, and plot conventions the AI follows."
+              label={t("fields.genre")}
+              tooltip={t("fields.genreTooltip")}
             />
             <input
               {...register("genre")}
-              placeholder="e.g. Fantasy, Thriller, Romance"
+              placeholder={t("fields.genrePlaceholder")}
               className={inputClass}
             />
             {errors.genre && <p className="mt-1.5 text-xs text-rust">{errors.genre.message}</p>}
@@ -151,12 +153,12 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
 
           <div>
             <FieldLabel
-              label="Target audience"
-              tooltip="Sets the reading level, complexity of language, and thematic depth. A children's audience gets simpler sentences; adults get nuanced subtext."
+              label={t("fields.targetAudience")}
+              tooltip={t("fields.targetAudienceTooltip")}
             />
             <input
               {...register("target_audience")}
-              placeholder="e.g. Young adults, Children 8-12"
+              placeholder={t("fields.targetAudiencePlaceholder")}
               className={inputClass}
             />
             {errors.target_audience && (
@@ -166,12 +168,12 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
 
           <div>
             <FieldLabel
-              label="Writing style"
-              tooltip="Controls sentence structure, rhythm, and descriptiveness. E.g. 'Minimalist' produces short punchy prose; 'Lyrical' produces rich, image-heavy writing."
+              label={t("fields.writingStyle")}
+              tooltip={t("fields.writingStyleTooltip")}
             />
             <input
               {...register("writing_style")}
-              placeholder="e.g. Descriptive, Minimalist, Lyrical"
+              placeholder={t("fields.writingStylePlaceholder")}
               className={inputClass}
             />
             {errors.writing_style && (
@@ -181,14 +183,14 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
 
           <div>
             <FieldLabel
-              label="Language"
-              tooltip="The language the generated chapters will be written in."
+              label={t("fields.language")}
+              tooltip={t("fields.languageTooltip")}
             />
             <select
               {...register("language")}
               className={`${inputClass} appearance-none cursor-pointer`}
             >
-              <option value="" disabled>Select a language</option>
+              <option value="" disabled>{t("fields.languagePlaceholder")}</option>
               {LANGUAGES.map((lang) => (
                 <option key={lang} value={lang}>
                   {upperCaseFirstLetter(lang)}
@@ -205,15 +207,15 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <SectionHeading
-              title="Characters"
-              tooltip="Key people in your story. The AI uses their names, roles, and traits to keep behavior consistent across chapters and avoid contradictions."
+              title={t("sections.characters")}
+              tooltip={t("sections.charactersTooltip")}
             />
             <button
               type="button"
               onClick={() => setCharacterEditingIndex(-1)}
               className="text-sm text-amber hover:text-amber/80 transition-colors"
             >
-              + Add character
+              {t("characters.addCharacter")}
             </button>
           </div>
 
@@ -221,9 +223,9 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-parchment/20 text-left text-xs text-parchment/60">
-                  <th className="pb-2 pr-4 font-medium">Name</th>
-                  <th className="pb-2 pr-4 font-medium">Role</th>
-                  <th className="pb-2 font-medium">Description</th>
+                  <th className="pb-2 pr-4 font-medium">{t("characters.colName")}</th>
+                  <th className="pb-2 pr-4 font-medium">{t("characters.colRole")}</th>
+                  <th className="pb-2 font-medium">{t("characters.colDescription")}</th>
                   <th className="pb-2" />
                 </tr>
               </thead>
@@ -240,14 +242,14 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
                           onClick={() => setCharacterEditingIndex(index)}
                           className="text-xs text-fog hover:text-parchment transition-colors"
                         >
-                          Edit
+                          {t("characters.edit")}
                         </button>
                         <button
                           type="button"
                           onClick={() => removeCharacter(index)}
                           className="text-xs text-rust hover:text-rust/80 transition-colors"
                         >
-                          Remove
+                          {t("characters.remove")}
                         </button>
                       </div>
                     </td>
@@ -261,18 +263,18 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
         {/* World */}
         <section className="space-y-6">
           <SectionHeading
-            title="World"
-            tooltip="Describes where the story takes place. The AI references this to write consistent setting details, sensory descriptions, and place names."
+            title={t("sections.world")}
+            tooltip={t("sections.worldTooltip")}
           />
 
           <div>
             <FieldLabel
-              label="World"
-              tooltip="The physical and social setting — geography, era, technology level, culture. The more specific, the more grounded the writing."
+              label={t("fields.world")}
+              tooltip={t("fields.worldTooltip")}
             />
             <textarea
               {...register("generation_settings.setting.world")}
-              placeholder="Describe the world where the story takes place"
+              placeholder={t("fields.worldPlaceholder")}
               rows={3}
               className={textareaClass}
             />
@@ -285,12 +287,12 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
 
           <div>
             <FieldLabel
-              label="Atmosphere"
-              tooltip="The emotional tone of the environment — dread, wonder, nostalgia. Shapes word choice and sensory details in every scene."
+              label={t("fields.atmosphere")}
+              tooltip={t("fields.atmosphereTooltip")}
             />
             <textarea
               {...register("generation_settings.setting.atmosphere")}
-              placeholder="e.g. Dark and gritty, Whimsical and lighthearted"
+              placeholder={t("fields.atmospherePlaceholder")}
               rows={3}
               className={textareaClass}
             />
@@ -305,18 +307,18 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
         {/* Plot Arc */}
         <section className="space-y-6">
           <SectionHeading
-            title="Plot"
-            tooltip="The backbone of your story. The AI uses this arc to escalate tension correctly and steer each chapter toward the resolution."
+            title={t("sections.plot")}
+            tooltip={t("sections.plotTooltip")}
           />
 
           <div>
             <FieldLabel
-              label="Premise"
-              tooltip="The 'what if' that starts everything. Sets expectations for the reader and tells the AI what kind of story this is."
+              label={t("fields.premise")}
+              tooltip={t("fields.premiseTooltip")}
             />
             <textarea
               {...register("generation_settings.plot_arc.premise")}
-              placeholder="The central idea or starting situation of the story"
+              placeholder={t("fields.premisePlaceholder")}
               rows={3}
               className={textareaClass}
             />
@@ -329,12 +331,12 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
 
           <div>
             <FieldLabel
-              label="Conflict"
-              tooltip="The core obstacle or struggle. Drives chapter-to-chapter tension and determines what the protagonist must overcome."
+              label={t("fields.conflict")}
+              tooltip={t("fields.conflictTooltip")}
             />
             <textarea
               {...register("generation_settings.plot_arc.conflict")}
-              placeholder="The main struggle or tension driving the story"
+              placeholder={t("fields.conflictPlaceholder")}
               rows={3}
               className={textareaClass}
             />
@@ -347,12 +349,12 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
 
           <div>
             <FieldLabel
-              label="Resolution"
-              tooltip="How the conflict ends. The AI uses this as a target state — it won't write chapters that make the resolution impossible."
+              label={t("fields.resolution")}
+              tooltip={t("fields.resolutionTooltip")}
             />
             <textarea
               {...register("generation_settings.plot_arc.resolution")}
-              placeholder="How the conflict is resolved"
+              placeholder={t("fields.resolutionPlaceholder")}
               rows={3}
               className={textareaClass}
             />
@@ -367,17 +369,17 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
         {/* Chapter Summaries */}
         <section className="space-y-4">
           <SectionHeading
-            title="Chapter Summaries"
-            tooltip="Auto-generated by AI after each chapter. You can edit them to adjust context for future chapters — but keep them accurate and non-empty."
+            title={t("sections.chapterSummaries")}
+            tooltip={t("sections.chapterSummariesTooltip")}
           />
 
           {chapterFields.length === 0 ? (
-            <p className="text-sm text-fog/50 italic">No chapters generated yet. Summaries will appear here automatically after each chapter is written.</p>
+            <p className="text-sm text-fog/50 italic">{t("chapterSummaries.empty")}</p>
           ) : (
             <div className="space-y-4">
               <div className="flex items-start gap-2 rounded-[10px] border border-amber/30 bg-amber/5 px-3.5 py-2.5">
-                <span className="text-amber mt-0.5">⚠</span>
-                <p className="text-xs text-fog/80">Editing a summary changes the context the AI uses for all future chapters. This may affect the direction and consistency of your story.</p>
+                <span className="text-amber mt-0.5">{t("chapterSummaries.warningIcon")}</span>
+                <p className="text-xs text-fog/80">{t("chapterSummaries.warningText")}</p>
               </div>
               {chapterFields.map((field, index) => (
                 <div
@@ -392,7 +394,7 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
                       className={textareaClass}
                     />
                     {errors.generation_settings?.chapter_summaries?.[index]?.summary && (
-                      <p className="mt-1.5 text-xs text-rust">Summary cannot be empty</p>
+                      <p className="mt-1.5 text-xs text-rust">{t("chapterSummaries.summaryCannotBeEmpty")}</p>
                     )}
                   </div>
                 </div>
@@ -408,7 +410,7 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
           disabled={!isDirty || isSaving}
           className="disabled:opacity-50 disabled:cursor-not-allowed w-full h-11 bg-amber text-canvas rounded-[10px] text-[15px] font-medium cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide"
         >
-          {isSaving ? "Saving..." : "Save"}
+          {isSaving ? t("saving") : t("save")}
         </button>
       </form>
 
