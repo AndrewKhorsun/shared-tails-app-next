@@ -26,7 +26,7 @@ const inputClass =
   "w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]";
 
 const textareaClass =
-  "w-full bg-input border border-border-soft rounded-[10px] px-3.5 py-2.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719] resize-none";
+  "w-full bg-input border border-border-soft rounded-[10px] px-3.5 py-2.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719] resize-none overflow-hidden [field-sizing:content]";
 
 function SectionHeading({ title, tooltip }: { title: string; tooltip: string }) {
   return (
@@ -377,7 +377,7 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
             <p className="text-sm text-fog/50 italic">{t("chapterSummaries.empty")}</p>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-start gap-2 rounded-[10px] border border-amber/30 bg-amber/5 px-3.5 py-2.5">
+              <div className="flex items-center justify-start gap-2 rounded-[10px] border border-amber/30 bg-amber/5 px-3.5 py-2.5">
                 <span className="text-amber mt-0.5">{t("chapterSummaries.warningIcon")}</span>
                 <p className="text-xs text-fog/80">{t("chapterSummaries.warningText")}</p>
               </div>
