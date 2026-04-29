@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { OAuthButtons } from "./oauth-buttons";
 import { api } from "@/lib/api";
 import type { AuthResponse } from "@/types";
 
 export function RegisterForm() {
+  const t = useTranslations("RegisterForm");
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -36,7 +38,7 @@ export function RegisterForm() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("passwordsDoNotMatch"));
       return;
     }
 
@@ -59,18 +61,16 @@ export function RegisterForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Error message */}
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-rust/10 border border-rust/30 text-sm text-rust">
           {error}
         </div>
       )}
 
-      {/* Name row */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            First name
+            {t("firstName")}
           </label>
           <input
             type="text"
@@ -82,7 +82,7 @@ export function RegisterForm() {
         </div>
         <div>
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            Last name
+            {t("lastName")}
           </label>
           <input
             type="text"
@@ -94,10 +94,9 @@ export function RegisterForm() {
         </div>
       </div>
 
-      {/* Email */}
       <div className="mb-4">
         <label className="block text-xs text-fog mb-1.5 tracking-wide">
-          Email address
+          {t("emailLabel")}
         </label>
         <input
           type="email"
@@ -109,10 +108,9 @@ export function RegisterForm() {
       </div>
 
       <div className="flex gap-3">
-        {/* Password */}
         <div className="mb-4 flex-1">
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            Password
+            {t("password")}
           </label>
           <div className="relative">
             <input
@@ -133,7 +131,6 @@ export function RegisterForm() {
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
-          {/* Strength bar */}
           <div className="h-[3px] bg-elevated rounded-sm mt-2 overflow-hidden">
             <div
               className={`h-full rounded-sm transition-all duration-300 ${
@@ -145,10 +142,9 @@ export function RegisterForm() {
           </div>
         </div>
 
-        {/* Confirm password */}
         <div className="mb-4 flex-1">
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            Confirm password
+            {t("confirmPassword")}
           </label>
           <input
             type="password"
@@ -160,29 +156,27 @@ export function RegisterForm() {
         </div>
       </div>
 
-      {/* Terms checkbox */}
       <label className="flex items-center gap-2 text-[13px] font-light text-fog cursor-pointer mt-1">
         <input type="checkbox" className="sr-only peer" />
         <span className="w-4 h-4 bg-input border border-border-mid rounded flex items-center justify-center shrink-0 peer-checked:border-border-active peer-checked:bg-amber/15" />
         <span>
-          I agree to the{" "}
+          {t("termsPrefix")}{" "}
           <a href="#" className="text-amber-dim hover:text-amber transition-colors">
-            Terms
+            {t("termsLink")}
           </a>{" "}
-          and{" "}
+          {t("termsAnd")}{" "}
           <a href="#" className="text-amber-dim hover:text-amber transition-colors">
-            Privacy Policy
+            {t("privacyLink")}
           </a>
         </span>
       </label>
 
-      {/* Submit */}
       <button
         type="submit"
         disabled={loading}
-        className="w-full h-[46px] bg-amber text-canvas rounded-[10px] text-[15px] font-medium mt-6 cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full h-11.5 bg-amber text-canvas rounded-[10px] text-[15px] font-medium mt-6 cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Creating account..." : "Create account"}
+        {loading ? t("creatingAccount") : t("createAccount")}
       </button>
 
       <OAuthButtons />

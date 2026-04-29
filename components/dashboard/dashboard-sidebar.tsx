@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, BookOpen, FileText, Plus, ScrollText } from "lucide-react";
 import { api } from "@/lib/api";
@@ -11,6 +11,7 @@ import { CreateChapterModal } from "../chapters/create-chapter-modal";
 import { Tooltip } from "../ui/tooltip";
 
 export function DashboardSidebar({ bookId }: { bookId: string }) {
+  const t = useTranslations("DashboardSidebar");
   const path = usePathname();
 
   const bookHref = `/books/${bookId}`;
@@ -35,33 +36,33 @@ export function DashboardSidebar({ bookId }: { bookId: string }) {
 
   return (
     <div className="flex flex-col gap-1">
-      <Tooltip content="All books">
+      <Tooltip content={t("allBooks")}>
         <Link
           href="/books"
           className="flex items-center gap-2 text-xs text-fog hover:text-parchment transition-colors py-1.5 px-2 rounded-lg hover:bg-elevated mb-2"
         >
           <ArrowLeft size={13} className="shrink-0" />
-          <span className="hidden sm:inline">All books</span>
+          <span className="hidden sm:inline">{t("allBooks")}</span>
         </Link>
       </Tooltip>
 
-      <Tooltip content="Book">
+      <Tooltip content={t("book")}>
         <Link
           href={bookHref}
           className={`flex items-center gap-2 text-sm py-1.5 px-2 rounded-lg transition-colors hover:bg-elevated ${isBookActive ? "text-amber" : "text-fog"}`}
         >
           <BookOpen size={14} className="shrink-0" />
-          <span className="hidden sm:inline">Book</span>
+          <span className="hidden sm:inline">{t("book")}</span>
         </Link>
       </Tooltip>
 
-      <Tooltip content="Book plan">
+      <Tooltip content={t("bookPlan")}>
         <Link
           href={bookPlanHref}
           className={`flex items-center gap-2 text-sm py-1.5 px-2 rounded-lg transition-colors hover:bg-elevated ${isBookPlanActive ? "text-amber" : "text-fog"}`}
         >
           <ScrollText size={14} className="shrink-0" />
-          <span className="hidden sm:inline">Book plan</span>
+          <span className="hidden sm:inline">{t("bookPlan")}</span>
         </Link>
       </Tooltip>
 
@@ -70,10 +71,10 @@ export function DashboardSidebar({ bookId }: { bookId: string }) {
       <div className="flex items-center justify-between px-2 mb-1">
         <span className="flex items-center gap-2 text-xs text-fog/60 uppercase tracking-wider">
           <FileText size={12} className="shrink-0" />
-          <span className="hidden sm:inline">Chapters</span>
+          <span className="hidden sm:inline">{t("chapters")}</span>
         </span>
 
-        <Tooltip content="Add new chapter">
+        <Tooltip content={t("addChapter")}>
           <button
             className="text-fog hover:text-parchment transition-colors cursor-pointer"
             onClick={() => setIsCreateChapterModalOpen(true)}

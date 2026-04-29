@@ -1,29 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { LoginForm } from "./login-form";
 import { RegisterForm } from "./register-form";
 
 export function AuthForm() {
+  const t = useTranslations("AuthForm");
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
 
   const isLogin = activeTab === "login";
 
   return (
     <div className="w-full max-w-95 animate-[fadeUp_0.5s_cubic-bezier(0.22,1,0.36,1)_both]">
-      {/* Title */}
       <h1 className="font-serif text-[28px] text-parchment mb-1.5">
-        {isLogin ? "Welcome back" : "Start writing"}
+        {isLogin ? t("welcomeBack") : t("startWriting")}
       </h1>
       <p className="text-sm font-light text-fog mb-8 leading-normal">
-        {isLogin
-          ? "Sign in to continue your story."
-          : "Create your account and begin your first book."}
+        {isLogin ? t("signInSubtitle") : t("registerSubtitle")}
       </p>
 
-      {/* Tab switcher */}
       <div className="flex bg-surface rounded-xl p-1 mb-8 relative">
-        {/* Sliding indicator */}
         <div
           className={`absolute top-1 left-1 w-[calc(50%-4px)] h-9 bg-elevated rounded-lg transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             !isLogin ? "translate-x-[calc(100%+4px)]" : ""
@@ -35,7 +32,7 @@ export function AuthForm() {
             isLogin ? "text-parchment font-medium" : "text-fog font-light"
           }`}
         >
-          Sign in
+          {t("signIn")}
         </button>
         <button
           onClick={() => setActiveTab("register")}
@@ -43,33 +40,31 @@ export function AuthForm() {
             !isLogin ? "text-parchment font-medium" : "text-fog font-light"
           }`}
         >
-          Create account
+          {t("createAccount")}
         </button>
       </div>
 
-      {/* Forms */}
       {isLogin ? <LoginForm /> : <RegisterForm />}
 
-      {/* Bottom text */}
       <p className="text-center text-[13px] font-light text-fog mt-6">
         {isLogin ? (
           <>
-            Don&apos;t have an account?{" "}
+            {t("noAccount")}{" "}
             <button
               onClick={() => setActiveTab("register")}
               className="text-amber-dim hover:text-amber transition-colors cursor-pointer"
             >
-              Create one
+              {t("createOne")}
             </button>
           </>
         ) : (
           <>
-            Already have an account?{" "}
+            {t("alreadyHaveAccount")}{" "}
             <button
               onClick={() => setActiveTab("login")}
               className="text-amber-dim hover:text-amber transition-colors cursor-pointer"
             >
-              Sign in
+              {t("signInLink")}
             </button>
           </>
         )}

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Pencil, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { Book } from "@/types";
@@ -13,6 +13,7 @@ interface BookCardProps {
 }
 
 export function BookCard({ book }: BookCardProps) {
+  const t = useTranslations("BookCard");
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -63,17 +64,16 @@ export function BookCard({ book }: BookCardProps) {
           <h3 className="font-serif text-parchment text-base leading-snug group-hover:text-amber transition-colors line-clamp-2 pr-14">
             {book.title}
           </h3>
-
           <p className="text-sm font-light text-fog line-clamp-3 leading-relaxed">
             {book.description}
           </p>
         </Link>
       </div>
 
-      <Modal isOpen={editOpen} onClose={() => setEditOpen(false)} title="Edit book">
+      <Modal isOpen={editOpen} onClose={() => setEditOpen(false)} title={t("editModalTitle")}>
         <form onSubmit={handleEdit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-fog font-light">Title</label>
+            <label className="text-xs text-fog font-light">{t("titleLabel")}</label>
             <input
               type="text"
               value={title}
@@ -83,7 +83,7 @@ export function BookCard({ book }: BookCardProps) {
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-fog font-light">Description</label>
+            <label className="text-xs text-fog font-light">{t("descriptionLabel")}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -94,26 +94,26 @@ export function BookCard({ book }: BookCardProps) {
           {error && <p className="text-red-400 text-xs">{error}</p>}
           <div className="flex justify-end gap-2 pt-1">
             <button type="button" onClick={() => setEditOpen(false)} className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer">
-              Cancel
+              {t("cancel")}
             </button>
             <button type="submit" disabled={isLoading} className="px-4 py-2 rounded-lg text-sm bg-amber-dim text-parchment hover:bg-amber transition-colors disabled:opacity-50 cursor-pointer">
-              {isLoading ? "Saving..." : "Save"}
+              {isLoading ? t("saving") : t("save")}
             </button>
           </div>
         </form>
       </Modal>
 
-      <Modal isOpen={deleteOpen} onClose={() => setDeleteOpen(false)} title="Delete book">
+      <Modal isOpen={deleteOpen} onClose={() => setDeleteOpen(false)} title={t("deleteModalTitle")}>
         <p className="text-sm text-fog">
-          Are you sure you want to delete <span className="text-parchment">"{book.title}"</span>? This cannot be undone.
+          {t("deleteConfirmPrefix")} <span className="text-parchment">&ldquo;{book.title}&rdquo;</span>? {t("deleteCannotUndo")}
         </p>
         {error && <p className="text-red-400 text-xs">{error}</p>}
         <div className="flex justify-end gap-2">
           <button onClick={() => setDeleteOpen(false)} className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer">
-            Cancel
+            {t("cancel")}
           </button>
           <button onClick={handleDelete} disabled={isLoading} className="px-4 py-2 rounded-lg text-sm bg-red-900/60 text-red-300 hover:bg-red-900 transition-colors disabled:opacity-50 cursor-pointer">
-            {isLoading ? "Deleting..." : "Delete"}
+            {isLoading ? t("deleting") : t("delete")}
           </button>
         </div>
       </Modal>

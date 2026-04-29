@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { api } from "@/lib/api";
 import { Modal } from "@/components/ui/modal";
 import { Chapter } from "@/types/chapters";
@@ -21,7 +22,7 @@ export function CreateChapterModal({
   onCreated,
   orderIndex,
 }: CreateChapterModalProps) {
-
+  const t = useTranslations("CreateChapterModal");
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -59,41 +60,39 @@ export function CreateChapterModal({
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={handleClose} title="New Chapter">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-fog font-light">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              placeholder="Your chapter title"
-              className="bg-surface rounded-lg px-3 py-2 text-sm text-parchment placeholder:text-fog/40 outline-none focus:ring-1 focus:ring-fog/30 transition"
-            />
-          </div>
+    <Modal isOpen={isOpen} onClose={handleClose} title={t("modalTitle")}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs text-fog font-light">{t("titleLabel")}</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            placeholder={t("titlePlaceholder")}
+            className="bg-surface rounded-lg px-3 py-2 text-sm text-parchment placeholder:text-fog/40 outline-none focus:ring-1 focus:ring-fog/30 transition"
+          />
+        </div>
 
-          {error && <p className="text-red-400 text-xs">{error}</p>}
+        {error && <p className="text-red-400 text-xs">{error}</p>}
 
-          <div className="flex justify-end gap-2 pt-1">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="px-4 py-2 rounded-lg text-sm bg-amber-dim text-parchment hover:bg-amber transition-colors disabled:opacity-50 cursor-pointer"
-            >
-              {isLoading ? "Creating..." : "Create"}
-            </button>
-          </div>
-        </form>
-      </Modal>
-    </>
+        <div className="flex justify-end gap-2 pt-1">
+          <button
+            type="button"
+            onClick={handleClose}
+            className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer"
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="px-4 py-2 rounded-lg text-sm bg-amber-dim text-parchment hover:bg-amber transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {isLoading ? t("creating") : t("create")}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }

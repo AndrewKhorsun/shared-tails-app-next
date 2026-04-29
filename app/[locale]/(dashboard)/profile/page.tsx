@@ -1,12 +1,17 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { serverApi } from "@/lib/server-api";
 import { User } from "@/types/auth";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 export default async function ProfilePage() {
+  const t = await getTranslations("ProfilePage");
   const { data, error } = await serverApi.get<{ user: User }>("/api/auth/me");
-  if (error || !data) redirect("/login");
+  if (error || !data) {
+    const locale = await getLocale();
+    redirect(`/${locale}/login`);
+  }
 
   const { user } = data;
 
@@ -17,10 +22,10 @@ export default async function ProfilePage() {
         className="inline-flex items-center gap-2 text-sm text-fog hover:text-parchment transition-colors mb-6"
       >
         <ArrowLeft size={14} />
-        Back to books
+        {t("backToBooks")}
       </Link>
 
-      <h1 className="font-serif text-parchment text-2xl mb-8">Profile</h1>
+      <h1 className="font-serif text-parchment text-2xl mb-8">{t("title")}</h1>
 
       <div className="flex items-center gap-4 mb-8">
         <div className="w-14 h-14 rounded-full bg-surface border border-border-soft flex items-center justify-center shrink-0">
@@ -37,9 +42,9 @@ export default async function ProfilePage() {
       </div>
 
       <div className="grid gap-5">
-        <Field label="First name" value={user.first_name} />
-        <Field label="Last name" value={user.last_name} />
-        <Field label="Email" value={user.email} />
+        <Field label={t("firstName")} value={user.first_name} />
+        <Field label={t("lastName")} value={user.last_name} />
+        <Field label={t("email")} value={user.email} />
       </div>
     </div>
   );

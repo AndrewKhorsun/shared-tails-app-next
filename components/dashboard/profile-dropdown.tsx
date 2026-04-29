@@ -1,12 +1,14 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { ChevronDown, User, LogOut } from "lucide-react";
 import { logout } from "@/lib/actions/auth";
 import { User as UserType } from "@/types/auth";
 
 export function ProfileDropdown({ user }: { user: UserType }) {
+  const t = useTranslations("ProfileDropdown");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -40,13 +42,13 @@ export function ProfileDropdown({ user }: { user: UserType }) {
             className="flex items-center gap-2 px-4 py-2.5 text-sm text-fog hover:text-parchment hover:bg-elevated transition-colors"
           >
             <User size={14} />
-            Profile
+            {t("profile")}
           </Link>
           <div className="border-t border-border-soft" />
           <form action={logout}>
             <button className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-amber-dim hover:text-amber hover:bg-elevated transition-colors">
               <LogOut size={14} />
-              Sign out
+              {t("signOut")}
             </button>
           </form>
         </div>

@@ -1,13 +1,11 @@
 import { BookOpen } from "lucide-react";
 import { AuthForm } from "@/components/auth/auth-form";
+import { getTranslations } from "next-intl/server";
 
-export default function LoginPage() {
-  const features = [
-    "AI agents that think, outline, and write",
-    "Real-time collaboration with co-authors",
-    "Every chapter, your voice",
-    "From concept to finished manuscript",
-  ];
+export default async function LoginPage() {
+  const t = await getTranslations("LoginPage");
+
+  const features = t.raw("features") as string[];
 
   return (
     <div className="flex min-h-screen">
@@ -17,17 +15,16 @@ export default function LoginPage() {
         <div className="flex items-center gap-2.5 mb-12 relative z-10">
           <BookOpen className="w-8 h-8 text-sage" strokeWidth={1.2} />
           <span className="font-sans text-base font-medium text-parchment tracking-wide">
-            Shared Tails
+            {t("brandName")}
           </span>
         </div>
 
         <div className="text-center relative z-10">
           <p className="font-serif italic text-[26px] leading-snug text-parchment mb-4 max-w-[340px]">
-            Write your book the way it deserves to be written
+            {t("headline")}
           </p>
           <p className="text-sm font-light text-fog leading-relaxed max-w-[300px] mx-auto mb-12">
-            AI agents collaborate with you — planning, drafting, editing — while
-            your voice stays at the center.
+            {t("subheadline")}
           </p>
 
           <ul className="text-left inline-block space-y-2.5">

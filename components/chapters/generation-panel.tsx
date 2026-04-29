@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { api } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
 import { useEffect, useReducer, useState } from "react";
@@ -54,6 +55,7 @@ export function GenerationPanel({
   chapterId,
   onContentGenerated,
 }: GenerationPanelProps) {
+  const t = useTranslations("GenerationPanel");
   const [state, dispatch] = useReducer(reducer, { status: "idle" });
   const [progressMessage, setProgressMessage] = useState("");
   const [hint, setHint] = useState("");
@@ -129,19 +131,19 @@ export function GenerationPanel({
     <div className="flex flex-col gap-6 p-6 rounded-xl bg-surface border border-border-soft">
       <div className="flex items-center gap-2">
         <span className="text-amber-dim">✦</span>
-        <h2 className="text-sm font-medium text-parchment">AI Generation</h2>
+        <h2 className="text-sm font-medium text-parchment">{t("title")}</h2>
       </div>
 
       {state.status === "idle" && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs text-fog font-light">
-              Hint <span className="text-fog/40">(optional)</span>
+              {t("hintLabel")} <span className="text-fog/40">{t("hintOptional")}</span>
             </label>
             <textarea
               value={hint}
               onChange={(e) => setHint(e.target.value)}
-              placeholder="Any specific direction for this chapter..."
+              placeholder={t("hintPlaceholder")}
               rows={3}
               className="bg-elevated rounded-lg px-3 py-2 text-sm text-parchment placeholder:text-fog/40 outline-none focus:ring-1 focus:ring-fog/30 transition resize-none"
             />
@@ -150,7 +152,7 @@ export function GenerationPanel({
             onClick={handleGenerate}
             className="self-start px-4 py-2 rounded-lg text-sm bg-amber-dim text-parchment hover:bg-amber transition-colors cursor-pointer"
           >
-            Generate chapter
+            {t("generate")}
           </button>
         </div>
       )}
@@ -158,7 +160,7 @@ export function GenerationPanel({
       {state.status === "loading" && (
         <div className="flex items-center gap-3 text-fog text-sm">
           <span className="animate-pulse">◆</span>
-          <span>{progressMessage || "Generating plan..."}</span>
+          <span>{progressMessage || t("generatingPlan")}</span>
         </div>
       )}
 
@@ -166,7 +168,7 @@ export function GenerationPanel({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <p className="text-xs text-fog font-light uppercase tracking-wider">
-              Chapter plan
+              {t("chapterPlan")}
             </p>
             <div className="plan-prose prose prose-sm max-w-none">
               <ReactMarkdown>{state.plan}</ReactMarkdown>
@@ -177,13 +179,13 @@ export function GenerationPanel({
               onClick={handleApprove}
               className="self-start px-4 py-2 rounded-lg text-sm bg-amber-dim text-parchment hover:bg-amber transition-colors cursor-pointer"
             >
-              Approve & write
+              {t("approve")}
             </button>
             <div className="flex flex-col gap-1.5">
               <textarea
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
-                placeholder="What should be different?"
+                placeholder={t("revisePlaceholder")}
                 rows={2}
                 className="bg-elevated rounded-lg px-3 py-2 text-sm text-parchment placeholder:text-fog/40 outline-none focus:ring-1 focus:ring-fog/30 transition resize-none"
               />
@@ -192,7 +194,7 @@ export function GenerationPanel({
                 disabled={!feedback.trim()}
                 className="self-start px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment border border-border-soft hover:border-fog/40 transition-colors disabled:opacity-40 cursor-pointer"
               >
-                Revise plan
+                {t("revisePlan")}
               </button>
             </div>
           </div>
@@ -203,10 +205,10 @@ export function GenerationPanel({
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3 text-fog text-sm">
             <span className="animate-pulse">◆</span>
-            <span>{progressMessage || "Writing chapter..."}</span>
+            <span>{progressMessage || t("writingChapter")}</span>
           </div>
           {progressMessage && (
-            <p className="text-xs text-fog/50 pl-6">This may take a minute...</p>
+            <p className="text-xs text-fog/50 pl-6">{t("takesAMinute")}</p>
           )}
         </div>
       )}
@@ -214,7 +216,7 @@ export function GenerationPanel({
       {state.status === "done" && (
         <div className="flex items-center gap-3 text-fog text-sm">
           <span className="text-amber-dim">✦</span>
-          <span>Chapter written successfully</span>
+          <span>{t("writtenSuccessfully")}</span>
         </div>
       )}
 
@@ -225,7 +227,7 @@ export function GenerationPanel({
             onClick={() => dispatch({ type: "RESET" })}
             className="self-start px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment border border-border-soft hover:border-fog/40 transition-colors cursor-pointer"
           >
-            Try again
+            {t("tryAgain")}
           </button>
         </div>
       )}

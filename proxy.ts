@@ -1,17 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
 
-export function proxy(request: NextRequest) {
+const intlMiddleware = createMiddleware(routing);
+const localePattern = new RegExp(`^/(${routing.locales.join("|")})`);
+
+export default function proxy(request: NextRequest) {
   const token = request.cookies.get("token");
   const { pathname } = request.nextUrl;
+  const pathWithoutLocale = pathname.replace(localePattern, "") || "/";
+  const locale = pathname.match(localePattern)?.[1] ?? routing.defaultLocale;
 
-  if (!token?.value && pathname !== '/login') {
-    return NextResponse.redirect(new URL("/login", request.url));
-  } else if (token?.value && pathname === "/login") {
-    return NextResponse.redirect(new URL("/books", request.url));
+  if (!token?.value && pathWithoutLocale !== "/login") {
+    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
-  return NextResponse.next();
+
+  if (token?.value && pathWithoutLocale === "/login") {
+    return NextResponse.redirect(new URL(`/${locale}/books`, request.url));
+  }
+
+  return intlMiddleware(request);
 }
 
 export const config = {
-  matcher: ["/books/:path*", "/profile/:path*", "/login"],
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };

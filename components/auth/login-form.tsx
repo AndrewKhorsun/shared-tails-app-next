@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Eye, EyeOff, Check } from "lucide-react";
 import { OAuthButtons } from "./oauth-buttons";
 import { api } from "@/lib/api";
 import type { AuthResponse } from "@/types";
 
 export function LoginForm() {
+  const t = useTranslations("LoginForm");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,17 +39,15 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Error message */}
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-rust/10 border border-rust/30 text-sm text-rust">
           {error}
         </div>
       )}
 
-      {/* Email */}
       <div className="mb-4">
         <label className="block text-xs text-fog mb-1.5 tracking-wide">
-          Email address
+          {t("emailLabel")}
         </label>
         <input
           type="email"
@@ -58,10 +58,9 @@ export function LoginForm() {
         />
       </div>
 
-      {/* Password */}
       <div className="mb-4">
         <label className="block text-xs text-fog mb-1.5 tracking-wide">
-          Password
+          {t("passwordLabel")}
         </label>
         <div className="relative">
           <input
@@ -81,27 +80,25 @@ export function LoginForm() {
         </div>
       </div>
 
-      {/* Remember me + Forgot */}
       <div className="flex justify-between items-center mt-3">
         <label className="flex items-center gap-2 text-[13px] font-light text-fog cursor-pointer">
           <input type="checkbox" className="sr-only peer" />
           <span className="w-4 h-4 bg-input border border-border-mid rounded flex items-center justify-center shrink-0 peer-checked:border-border-active peer-checked:bg-amber/15">
             <Check size={10} className="hidden peer-checked:block text-amber" strokeWidth={2} />
           </span>
-          Remember me
+          {t("rememberMe")}
         </label>
         <a href="#" className="text-xs font-light text-amber-dim hover:text-amber transition-colors">
-          Forgot password?
+          {t("forgotPassword")}
         </a>
       </div>
 
-      {/* Submit */}
       <button
         type="submit"
         disabled={loading}
         className="w-full h-11.5 bg-amber text-canvas rounded-[10px] text-[15px] font-medium mt-6 cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Signing in..." : "Sign in"}
+        {loading ? t("signingIn") : t("signIn")}
       </button>
 
       <OAuthButtons />

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { characterSchema } from "@/lib/validations/book-plan.schema";
 import { Modal } from "@/components/ui/modal";
+import { useTranslations } from "next-intl";
 
 type CharacterDto = z.infer<typeof characterSchema>;
 
@@ -22,6 +23,7 @@ export function CharacterModal({
   onSave,
   defaultValues,
 }: CharacterModalProps) {
+  const t = useTranslations("CharacterModal");
   const [traitInput, setTraitInput] = useState("");
 
   const {
@@ -55,7 +57,10 @@ export function CharacterModal({
   }
 
   function removeTrait(index: number) {
-    setValue("traits", traits.filter((_, i) => i !== index));
+    setValue(
+      "traits",
+      traits.filter((_, i) => i !== index),
+    );
   }
 
   function onSubmit(data: CharacterDto) {
@@ -77,7 +82,7 @@ export function CharacterModal({
         {/* Name */}
         <div>
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            Name
+            {t("name")}
           </label>
           <input
             {...register("name")}
@@ -92,12 +97,12 @@ export function CharacterModal({
         {/* Role */}
         <div>
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            Role
+            {t("role")}
           </label>
           <select {...register("role")} className={inputClass}>
-            <option value="protagonist">Protagonist</option>
-            <option value="antagonist">Antagonist</option>
-            <option value="supporting">Supporting</option>
+            <option value="protagonist">{t("protagonist")}</option>
+            <option value="antagonist">{t("antagonist")}</option>
+            <option value="supporting">{t("supporting")}</option>
           </select>
           {errors.role && (
             <p className="mt-1.5 text-xs text-rust">{errors.role.message}</p>
@@ -107,11 +112,11 @@ export function CharacterModal({
         {/* Description */}
         <div>
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            Description
+            {t("description")}
           </label>
           <textarea
             {...register("description")}
-            placeholder="Who is this character, what is their role in the story"
+            placeholder={t("descriptionPlaceholder")}
             rows={3}
             className="w-full bg-input border border-border-soft rounded-[10px] px-3.5 py-2.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719] resize-none"
           />
@@ -125,13 +130,13 @@ export function CharacterModal({
         {/* Traits */}
         <div>
           <label className="block text-xs text-fog mb-1.5 tracking-wide">
-            Traits
+            {t("traits")}
           </label>
           <input
             value={traitInput}
             onChange={(e) => setTraitInput(e.target.value)}
             onKeyDown={handleTraitKeyDown}
-            placeholder="Type a trait and press Enter"
+            placeholder={t("traitsPlaceholder")}
             className={inputClass}
           />
           {traits.length > 0 && (
