@@ -6,7 +6,7 @@ const intlMiddleware = createMiddleware(routing);
 const localePattern = new RegExp(`^/(${routing.locales.join("|")})`);
 
 function getBaseUrl() {
-  return process.env.NEXT_PUBLIC_SITE_URL
+  return process.env.NEXT_PUBLIC_SITE_URL;
 }
 
 export default function proxy(request: NextRequest) {
@@ -17,13 +17,14 @@ export default function proxy(request: NextRequest) {
   const locale = pathname.match(localePattern)?.[1] ?? routing.defaultLocale;
 
   const baseUrl = getBaseUrl();
-
+  console.log("Base URL:", baseUrl);
+  console.log("Base request.url:", request.url);
   if (!token?.value && pathWithoutLocale !== "/login") {
-    return NextResponse.redirect(new URL(`/${locale}/login`, baseUrl));
+    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
 
   if (token?.value && pathWithoutLocale === "/login") {
-    return NextResponse.redirect(new URL(`/${locale}/books`, baseUrl));
+    return NextResponse.redirect(new URL(`/${locale}/books`, request.url));
   }
 
   return intlMiddleware(request);
