@@ -18,13 +18,13 @@ export default function proxy(request: NextRequest) {
 
   const baseUrl = getBaseUrl();
   console.log("Base URL:", baseUrl);
-  console.log("Base request.url:", request.url);
+  console.log("request.url:", request.url);
   if (!token?.value && pathWithoutLocale !== "/login") {
-    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+    return NextResponse.redirect(new URL(`/${locale}/login`, baseUrl));
   }
 
   if (token?.value && pathWithoutLocale === "/login") {
-    return NextResponse.redirect(new URL(`/${locale}/books`, request.url));
+    return NextResponse.redirect(new URL(`/${locale}/books`, baseUrl));
   }
 
   return intlMiddleware(request);
