@@ -5,8 +5,8 @@ import { routing } from "./i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 const localePattern = new RegExp(`^/(${routing.locales.join("|")})`);
 
-function getBaseUrl(request: NextRequest) {
-  return process.env.NEXT_PUBLIC_SITE_URL || request.nextUrl.origin;
+function getBaseUrl() {
+  return process.env.NEXT_PUBLIC_SITE_URL
 }
 
 export default function proxy(request: NextRequest) {
@@ -16,7 +16,7 @@ export default function proxy(request: NextRequest) {
   const pathWithoutLocale = pathname.replace(localePattern, "") || "/";
   const locale = pathname.match(localePattern)?.[1] ?? routing.defaultLocale;
 
-  const baseUrl = getBaseUrl(request);
+  const baseUrl = getBaseUrl();
 
   if (!token?.value && pathWithoutLocale !== "/login") {
     return NextResponse.redirect(new URL(`/${locale}/login`, baseUrl));
