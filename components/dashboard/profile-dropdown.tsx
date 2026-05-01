@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { ChevronDown, User, LogOut } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { logout } from "@/lib/actions/auth";
 import { User as UserType } from "@/types/auth";
 
-export function ProfileDropdown({ user }: { user: UserType }) {
+export function ProfileDropdown({ user, trigger }: { user: UserType; trigger?: ReactNode }) {
   const t = useTranslations("ProfileDropdown");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -24,15 +24,23 @@ export function ProfileDropdown({ user }: { user: UserType }) {
 
   return (
     <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 text-sm text-fog hover:text-parchment transition-colors"
-      >
-        <span>
-          {user.first_name} {user.last_name}
-        </span>
-        <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
-      </button>
+      {trigger ? (
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center justify-center"
+        >
+          {trigger}
+        </button>
+      ) : (
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center gap-2 text-sm text-fog hover:text-parchment transition-colors"
+        >
+          <span>
+            {user.first_name} {user.last_name}
+          </span>
+        </button>
+      )}
 
       {open && (
         <div className="absolute right-0 top-full mt-2 w-44 bg-surface border border-border-soft rounded-lg shadow-lg overflow-hidden z-50">

@@ -20,7 +20,7 @@ export default async function DashboardLayout({
     <SocketProvider userId={data.user.id}>
       <div className="min-h-screen flex flex-col">
         <TopNav user={data.user} />
-        <main className="flex-1 p-6 bg-elevated">
+        <main className="flex-1 overflow-auto bg-canvas">
           {children}
         </main>
       </div>

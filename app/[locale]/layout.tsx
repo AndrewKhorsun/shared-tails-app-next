@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
+import { DM_Sans, DM_Serif_Display, JetBrains_Mono, Crimson_Pro } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
@@ -21,6 +21,13 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: "400",
+});
+
+const crimsonPro = Crimson_Pro({
+  variable: "--font-serif-body",
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -48,7 +55,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${dmSans.variable} ${dmSerif.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${dmSans.variable} ${dmSerif.variable} ${jetbrainsMono.variable} ${crimsonPro.variable} antialiased`}
       >
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
