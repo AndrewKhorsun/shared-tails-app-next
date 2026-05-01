@@ -13,6 +13,7 @@ import { upperCaseFirstLetter } from "@/lib/utils";
 import { BookPlan } from "@/types";
 import { api } from "@/lib/api";
 import { useState } from "react";
+import { useActiveSection } from "@/hooks/use-active-section";
 import { useRouter } from "@/i18n/navigation";
 import { CharacterModal } from "./character-modal";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -22,48 +23,74 @@ type CharacterDto = z.infer<typeof characterSchema>;
 
 const LANGUAGES = createBookPlanSchema.shape.language.options;
 
+const ROLE_COLORS: Record<string, string> = {
+  protagonist: "#6E9B7B",
+  antagonist: "#9B4A35",
+  supporting: "#C9A96E",
+};
+
 const inputClass =
-  "w-full h-11 bg-input border border-border-soft rounded-[10px] px-3.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719]";
+  "w-full bg-input border border-border-soft rounded-[8px] px-3 py-2.5 font-sans text-sm text-parchment placeholder:text-fog/50 outline-none transition-[border] focus:border-border-active";
 
 const textareaClass =
-  "w-full bg-input border border-border-soft rounded-[10px] px-3.5 py-2.5 text-sm font-light text-parchment placeholder:text-fog/50 outline-none transition-all focus:border-border-active focus:shadow-[0_0_0_3px_rgba(201,169,110,0.10)] focus:bg-[#1b2719] resize-none overflow-hidden [field-sizing:content]";
+  "w-full bg-input border border-border-soft rounded-[8px] px-3 py-2.5 font-serif-body text-sm leading-relaxed text-parchment placeholder:text-fog/50 outline-none transition-[border] focus:border-border-active resize-none overflow-hidden [field-sizing:content]";
 
-function SectionHeading({ title, tooltip }: { title: string; tooltip: string }) {
+const SECTIONS = [
+  { id: "core", labelKey: "nav.core" },
+  { id: "world", labelKey: "nav.world" },
+  { id: "arc", labelKey: "nav.arc" },
+  { id: "cast", labelKey: "nav.cast" },
+  { id: "summaries", labelKey: "nav.summaries" },
+] as const;
+
+function Field({ label, tooltip, hint, children }: { label: string; tooltip?: string; hint?: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2">
-      <h2 className="text-lg font-medium text-parchment">{title}</h2>
-      <Tooltip content={tooltip}>
-        <button type="button" className="text-fog/50 hover:text-fog transition-colors cursor-default">
-          <Info size={14} />
-        </button>
-      </Tooltip>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-1.5">
+        <label className="text-[11px] uppercase tracking-[.06em] text-fog/87 font-medium">{label}</label>
+        {tooltip && (
+          <Tooltip content={tooltip}>
+            <button type="button" className="text-fog/40 hover:text-fog/70 transition-colors cursor-default">
+              <Info size={11} />
+            </button>
+          </Tooltip>
+        )}
+      </div>
+      {children}
+      {hint && <div className="text-sm text-fog/60 font-serif-body italic">{hint}</div>}
     </div>
   );
 }
 
-function FieldLabel({ label, tooltip }: { label: string; tooltip?: string }) {
+function SectionBlock({
+  id, title, sub, action, children,
+}: {
+  id: string; title: string; sub?: string; action?: React.ReactNode; children: React.ReactNode;
+}) {
   return (
-    <div className="flex items-center gap-1.5 mb-1.5">
-      <label className="text-xs text-fog tracking-wide">{label}</label>
-      {tooltip && (
-        <Tooltip content={tooltip}>
-          <button type="button" className="text-fog/40 hover:text-fog/70 transition-colors cursor-default">
-            <Info size={11} />
-          </button>
-        </Tooltip>
-      )}
-    </div>
+    <section id={id} className="flex flex-col gap-[18px]" style={{ scrollMarginTop: 24 }}>
+      <div className="flex items-end justify-between pb-2.5 border-b border-border-soft">
+        <div>
+          <h2 className="font-serif text-[22px] text-parchment font-normal m-0">{title}</h2>
+          {sub && <div className="font-serif-body italic text-[15px] text-fog/80 mt-1">{sub}</div>}
+        </div>
+        {action}
+      </div>
+      {children}
+    </section>
   );
 }
 
 interface BookPlanFormProps {
   bookId: string;
+  bookTitle?: string;
   existingPlan?: BookPlan;
 }
 
-export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
+export function BookPlanForm({ bookId, bookTitle, existingPlan }: BookPlanFormProps) {
   const t = useTranslations("BookPlanForm");
   const router = useRouter();
+  const activeSection = useActiveSection(SECTIONS.map((s) => s.id));
   const [characterEditingIndex, setCharacterEditingIndex] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -129,114 +156,211 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-
-        {/* Main */}
-        <section className="space-y-6">
-          <SectionHeading
-            title={t("sections.main")}
-            tooltip={t("sections.mainTooltip")}
-          />
-
-          <div>
-            <FieldLabel
-              label={t("fields.genre")}
-              tooltip={t("fields.genreTooltip")}
-            />
-            <input
-              {...register("genre")}
-              placeholder={t("fields.genrePlaceholder")}
-              className={inputClass}
-            />
-            {errors.genre && <p className="mt-1.5 text-xs text-rust">{errors.genre.message}</p>}
-          </div>
-
-          <div>
-            <FieldLabel
-              label={t("fields.targetAudience")}
-              tooltip={t("fields.targetAudienceTooltip")}
-            />
-            <input
-              {...register("target_audience")}
-              placeholder={t("fields.targetAudiencePlaceholder")}
-              className={inputClass}
-            />
-            {errors.target_audience && (
-              <p className="mt-1.5 text-xs text-rust">{errors.target_audience.message}</p>
-            )}
-          </div>
-
-          <div>
-            <FieldLabel
-              label={t("fields.writingStyle")}
-              tooltip={t("fields.writingStyleTooltip")}
-            />
-            <input
-              {...register("writing_style")}
-              placeholder={t("fields.writingStylePlaceholder")}
-              className={inputClass}
-            />
-            {errors.writing_style && (
-              <p className="mt-1.5 text-xs text-rust">{errors.writing_style.message}</p>
-            )}
-          </div>
-
-          <div>
-            <FieldLabel
-              label={t("fields.language")}
-              tooltip={t("fields.languageTooltip")}
-            />
-            <select
-              {...register("language")}
-              className={`${inputClass} appearance-none cursor-pointer`}
+      <div
+        className="flex flex-1"
+        style={{ maxWidth: 1180, width: "100%", margin: "0 auto", padding: "32px 32px 64px 0", gap: 36, boxSizing: "border-box" }}
+      >
+        {/* Side TOC */}
+        <aside className="w-[200px] shrink-0 fixed self-start" style={{ top: 52 + 32, paddingLeft: 32 }}>
+          {bookTitle && (
+            <a
+              href={`../`}
+              className="inline-flex items-center gap-1.5 text-xs text-fog mb-4 no-underline"
             >
-              <option value="" disabled>{t("fields.languagePlaceholder")}</option>
-              {LANGUAGES.map((lang) => (
-                <option key={lang} value={lang}>
-                  {upperCaseFirstLetter(lang)}
-                </option>
-              ))}
-            </select>
-            {errors.language && (
-              <p className="mt-1.5 text-xs text-rust">{errors.language.message}</p>
-            )}
+              ← {bookTitle}
+            </a>
+          )}
+          <div className="text-[11px] text-fog/67 tracking-[.14em] uppercase mb-3.5 font-semibold">
+            {t("nav.bookPlan")}
           </div>
-        </section>
+          <div className="flex flex-col gap-0.5">
+            {SECTIONS.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className={`text-sm px-2.5 py-1.5 rounded-md font-sans no-underline transition-colors ${
+                  activeSection === s.id
+                    ? "text-amber bg-amber/10"
+                    : "text-fog hover:text-parchment"
+                }`}
+              >
+                {t(s.labelKey)}
+              </a>
+            ))}
+          </div>
+          <div className="mt-8 p-3.5 bg-surface rounded-[10px] border border-border-soft">
+            <div className="text-[11px] text-amber tracking-[.14em] uppercase font-semibold mb-2">
+              ✺ {t("whyMatters.title")}
+            </div>
+            <div className="text-sm text-fog leading-[1.55] font-serif-body">
+              {t("whyMatters.body")}
+            </div>
+          </div>
+        </aside>
 
-        {/* Characters */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <SectionHeading
+        {/* Form */}
+        <main className="flex-1 min-w-0" style={{ marginLeft: 236, paddingTop: 0 }}>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-9">
+            {/* Page header */}
+            <div>
+              {bookTitle && (
+                <div className="text-[11px] text-fog/67 tracking-[.14em] uppercase mb-2">{bookTitle}</div>
+              )}
+              <h1 className="font-serif text-[40px] text-parchment m-0 font-normal">{t("pageTitle")}</h1>
+              <p className="font-serif-body italic text-[15px] text-fog mt-2.5 max-w-[580px]">
+                {t("pageSubtitle")}
+              </p>
+            </div>
+
+            {/* Core */}
+            <SectionBlock id="core" title={t("sections.main")} sub={t("sections.mainSub")}>
+              <div className="grid grid-cols-2 gap-[18px]">
+                <Field label={t("fields.genre")} tooltip={t("fields.genreTooltip")}>
+                  <input
+                    {...register("genre")}
+                    placeholder={t("fields.genrePlaceholder")}
+                    className={inputClass}
+                  />
+                  {errors.genre && <p className="text-xs text-rust">{errors.genre.message}</p>}
+                </Field>
+                <Field label={t("fields.language")} tooltip={t("fields.languageTooltip")}>
+                  <select
+                    {...register("language")}
+                    className={`${inputClass} appearance-none cursor-pointer`}
+                  >
+                    <option value="" disabled>{t("fields.languagePlaceholder")}</option>
+                    {LANGUAGES.map((lang) => (
+                      <option key={lang} value={lang}>{upperCaseFirstLetter(lang)}</option>
+                    ))}
+                  </select>
+                  {errors.language && <p className="text-xs text-rust">{errors.language.message}</p>}
+                </Field>
+              </div>
+
+              <Field label={t("fields.targetAudience")} tooltip={t("fields.targetAudienceTooltip")}>
+                <input
+                  {...register("target_audience")}
+                  placeholder={t("fields.targetAudiencePlaceholder")}
+                  className={inputClass}
+                />
+                {errors.target_audience && (
+                  <p className="text-xs text-rust">{errors.target_audience.message}</p>
+                )}
+              </Field>
+
+              <Field
+                label={t("fields.writingStyle")}
+                tooltip={t("fields.writingStyleTooltip")}
+              >
+                <textarea
+                  {...register("writing_style")}
+                  placeholder={t("fields.writingStylePlaceholder")}
+                  rows={3}
+                  className={textareaClass}
+                />
+                {errors.writing_style && (
+                  <p className="text-xs text-rust">{errors.writing_style.message}</p>
+                )}
+              </Field>
+            </SectionBlock>
+
+            {/* World */}
+            <SectionBlock id="world" title={t("sections.world")} sub={t("sections.worldSub")}>
+              <Field label={t("fields.world")} tooltip={t("fields.worldTooltip")}>
+                <textarea
+                  {...register("generation_settings.setting.world")}
+                  placeholder={t("fields.worldPlaceholder")}
+                  rows={3}
+                  className={textareaClass}
+                />
+                {errors.generation_settings?.setting?.world && (
+                  <p className="text-xs text-rust">{errors.generation_settings.setting.world.message}</p>
+                )}
+              </Field>
+
+              <Field label={t("fields.atmosphere")} tooltip={t("fields.atmosphereTooltip")}>
+                <textarea
+                  {...register("generation_settings.setting.atmosphere")}
+                  placeholder={t("fields.atmospherePlaceholder")}
+                  rows={3}
+                  className={textareaClass}
+                />
+                {errors.generation_settings?.setting?.atmosphere && (
+                  <p className="text-xs text-rust">{errors.generation_settings.setting.atmosphere.message}</p>
+                )}
+              </Field>
+            </SectionBlock>
+
+            {/* Arc */}
+            <SectionBlock id="arc" title={t("sections.plot")} sub={t("sections.plotSub")}>
+              <Field label={t("fields.premise")} tooltip={t("fields.premiseTooltip")}>
+                <textarea
+                  {...register("generation_settings.plot_arc.premise")}
+                  placeholder={t("fields.premisePlaceholder")}
+                  rows={2}
+                  className={textareaClass}
+                />
+                {errors.generation_settings?.plot_arc?.premise && (
+                  <p className="text-xs text-rust">{errors.generation_settings.plot_arc.premise.message}</p>
+                )}
+              </Field>
+
+              <Field label={t("fields.conflict")} tooltip={t("fields.conflictTooltip")}>
+                <textarea
+                  {...register("generation_settings.plot_arc.conflict")}
+                  placeholder={t("fields.conflictPlaceholder")}
+                  rows={2}
+                  className={textareaClass}
+                />
+                {errors.generation_settings?.plot_arc?.conflict && (
+                  <p className="text-xs text-rust">{errors.generation_settings.plot_arc.conflict.message}</p>
+                )}
+              </Field>
+
+              <Field label={t("fields.resolution")} tooltip={t("fields.resolutionTooltip")}>
+                <textarea
+                  {...register("generation_settings.plot_arc.resolution")}
+                  placeholder={t("fields.resolutionPlaceholder")}
+                  rows={2}
+                  className={textareaClass}
+                />
+                {errors.generation_settings?.plot_arc?.resolution && (
+                  <p className="text-xs text-rust">{errors.generation_settings.plot_arc.resolution.message}</p>
+                )}
+              </Field>
+            </SectionBlock>
+
+            {/* Cast */}
+            <SectionBlock
+              id="cast"
               title={t("sections.characters")}
-              tooltip={t("sections.charactersTooltip")}
-            />
-            <button
-              type="button"
-              onClick={() => setCharacterEditingIndex(-1)}
-              className="text-sm text-amber hover:text-amber/80 transition-colors"
+              sub={t("sections.charactersSub")}
+              action={
+                <button
+                  type="button"
+                  onClick={() => setCharacterEditingIndex(-1)}
+                  className="bg-elevated text-fog border border-border-soft px-3 py-1.5 rounded-md font-sans text-xs cursor-pointer hover:text-parchment transition-colors"
+                >
+                  + {t("characters.addCharacter")}
+                </button>
+              }
             >
-              {t("characters.addCharacter")}
-            </button>
-          </div>
-
-          {characterFields.length > 0 && (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-parchment/20 text-left text-xs text-parchment/60">
-                  <th className="pb-2 pr-4 font-medium">{t("characters.colName")}</th>
-                  <th className="pb-2 pr-4 font-medium">{t("characters.colRole")}</th>
-                  <th className="pb-2 font-medium">{t("characters.colDescription")}</th>
-                  <th className="pb-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {characterFields.map((field, index) => (
-                  <tr key={field.id} className="border-b border-parchment/10 last:border-0">
-                    <td className="py-2 pr-4 font-medium">{field.name}</td>
-                    <td className="py-2 pr-4 text-parchment/70">{field.role}</td>
-                    <td className="py-2 text-parchment/70">{field.description}</td>
-                    <td className="py-2 pl-4">
-                      <div className="flex gap-4 justify-end">
+              {characterFields.length > 0 && (
+                <div className="flex flex-col gap-3.5">
+                  {characterFields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      className="p-[18px] bg-surface border border-border-soft rounded-[10px] flex items-center gap-4"
+                      style={{ borderLeft: `3px solid ${ROLE_COLORS[field.role] ?? "#C9A96E"}` }}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-parchment truncate">{field.name}</div>
+                        <div className="text-xs text-fog/70 capitalize mt-0.5">{field.role}</div>
+                        {field.description && (
+                          <div className="text-xs text-fog/70 mt-1 line-clamp-2">{field.description}</div>
+                        )}
+                      </div>
+                      <div className="flex gap-3 shrink-0">
                         <button
                           type="button"
                           onClick={() => setCharacterEditingIndex(index)}
@@ -252,167 +376,66 @@ export function BookPlanForm({ bookId, existingPlan }: BookPlanFormProps) {
                           {t("characters.remove")}
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
-
-        {/* World */}
-        <section className="space-y-6">
-          <SectionHeading
-            title={t("sections.world")}
-            tooltip={t("sections.worldTooltip")}
-          />
-
-          <div>
-            <FieldLabel
-              label={t("fields.world")}
-              tooltip={t("fields.worldTooltip")}
-            />
-            <textarea
-              {...register("generation_settings.setting.world")}
-              placeholder={t("fields.worldPlaceholder")}
-              rows={3}
-              className={textareaClass}
-            />
-            {errors.generation_settings?.setting?.world && (
-              <p className="mt-1.5 text-xs text-rust">
-                {errors.generation_settings.setting.world.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <FieldLabel
-              label={t("fields.atmosphere")}
-              tooltip={t("fields.atmosphereTooltip")}
-            />
-            <textarea
-              {...register("generation_settings.setting.atmosphere")}
-              placeholder={t("fields.atmospherePlaceholder")}
-              rows={3}
-              className={textareaClass}
-            />
-            {errors.generation_settings?.setting?.atmosphere && (
-              <p className="mt-1.5 text-xs text-rust">
-                {errors.generation_settings.setting.atmosphere.message}
-              </p>
-            )}
-          </div>
-        </section>
-
-        {/* Plot Arc */}
-        <section className="space-y-6">
-          <SectionHeading
-            title={t("sections.plot")}
-            tooltip={t("sections.plotTooltip")}
-          />
-
-          <div>
-            <FieldLabel
-              label={t("fields.premise")}
-              tooltip={t("fields.premiseTooltip")}
-            />
-            <textarea
-              {...register("generation_settings.plot_arc.premise")}
-              placeholder={t("fields.premisePlaceholder")}
-              rows={3}
-              className={textareaClass}
-            />
-            {errors.generation_settings?.plot_arc?.premise && (
-              <p className="mt-1.5 text-xs text-rust">
-                {errors.generation_settings.plot_arc.premise.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <FieldLabel
-              label={t("fields.conflict")}
-              tooltip={t("fields.conflictTooltip")}
-            />
-            <textarea
-              {...register("generation_settings.plot_arc.conflict")}
-              placeholder={t("fields.conflictPlaceholder")}
-              rows={3}
-              className={textareaClass}
-            />
-            {errors.generation_settings?.plot_arc?.conflict && (
-              <p className="mt-1.5 text-xs text-rust">
-                {errors.generation_settings.plot_arc.conflict.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <FieldLabel
-              label={t("fields.resolution")}
-              tooltip={t("fields.resolutionTooltip")}
-            />
-            <textarea
-              {...register("generation_settings.plot_arc.resolution")}
-              placeholder={t("fields.resolutionPlaceholder")}
-              rows={3}
-              className={textareaClass}
-            />
-            {errors.generation_settings?.plot_arc?.resolution && (
-              <p className="mt-1.5 text-xs text-rust">
-                {errors.generation_settings.plot_arc.resolution.message}
-              </p>
-            )}
-          </div>
-        </section>
-
-        {/* Chapter Summaries */}
-        <section className="space-y-4">
-          <SectionHeading
-            title={t("sections.chapterSummaries")}
-            tooltip={t("sections.chapterSummariesTooltip")}
-          />
-
-          {chapterFields.length === 0 ? (
-            <p className="text-sm text-fog/50 italic">{t("chapterSummaries.empty")}</p>
-          ) : (
-            <div className="space-y-4">
-              <div className="flex items-center justify-start gap-2 rounded-[10px] border border-amber/30 bg-amber/5 px-3.5 py-2.5">
-                <span className="text-amber mt-0.5">{t("chapterSummaries.warningIcon")}</span>
-                <p className="text-xs text-fog/80">{t("chapterSummaries.warningText")}</p>
-              </div>
-              {chapterFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="flex gap-4 items-start border border-border-soft rounded-[10px] p-4 bg-input"
-                >
-                  <span className="text-xs text-fog mt-3 w-6 shrink-0 text-right">{field.chapter}</span>
-                  <div className="flex-1">
-                    <textarea
-                      {...register(`generation_settings.chapter_summaries.${index}.summary`)}
-                      rows={2}
-                      className={textareaClass}
-                    />
-                    {errors.generation_settings?.chapter_summaries?.[index]?.summary && (
-                      <p className="mt-1.5 text-xs text-rust">{t("chapterSummaries.summaryCannotBeEmpty")}</p>
-                    )}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+            </SectionBlock>
+
+            {/* Chapter Summaries */}
+            <SectionBlock
+              id="summaries"
+              title={t("sections.chapterSummaries")}
+              sub={t("sections.chapterSummariesSub")}
+            >
+              {chapterFields.length === 0 ? (
+                <p className="text-sm text-fog/50 italic">{t("chapterSummaries.empty")}</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {chapterFields.map((field, index) => (
+                    <div key={field.id} className="grid gap-3 items-center" style={{ gridTemplateColumns: "60px 1fr" }}>
+                      <span className="font-mono text-[11px] text-fog/67 text-center tracking-[.06em]">
+                        CH {String(field.chapter).padStart(2, "0")}
+                      </span>
+                      <div>
+                        <textarea
+                          {...register(`generation_settings.chapter_summaries.${index}.summary`)}
+                          placeholder={t("chapterSummaries.placeholder")}
+                          rows={1}
+                          className={textareaClass}
+                        />
+                        {errors.generation_settings?.chapter_summaries?.[index]?.summary && (
+                          <p className="mt-1 text-xs text-rust">{t("chapterSummaries.summaryCannotBeEmpty")}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </SectionBlock>
+
+            {saveError && <p className="text-xs text-rust">{saveError}</p>}
+
+            <div className="flex gap-3 justify-end py-5 border-t border-border-soft">
+              <button
+                type="button"
+                onClick={() => reset()}
+                disabled={!isDirty}
+                className="disabled:opacity-40 disabled:cursor-not-allowed bg-transparent text-fog border border-border-mid px-[18px] py-2.5 rounded-[8px] font-sans text-[13px] cursor-pointer hover:text-parchment transition-colors"
+              >
+                {t("discardChanges")}
+              </button>
+              <button
+                type="submit"
+                disabled={!isDirty || isSaving}
+                className="disabled:opacity-50 disabled:cursor-not-allowed bg-amber text-canvas border-0 px-[22px] py-2.5 rounded-[8px] font-sans text-[13px] font-medium cursor-pointer hover:bg-amber/90 transition-colors"
+              >
+                {isSaving ? t("saving") : t("save")}
+              </button>
             </div>
-          )}
-        </section>
-
-        {saveError && <p className="text-xs text-rust">{saveError}</p>}
-
-        <button
-          type="submit"
-          disabled={!isDirty || isSaving}
-          className="disabled:opacity-50 disabled:cursor-not-allowed w-full h-11 bg-amber text-canvas rounded-[10px] text-[15px] font-medium cursor-pointer hover:bg-[#D4B87C] active:scale-[0.97] transition-all tracking-wide"
-        >
-          {isSaving ? t("saving") : t("save")}
-        </button>
-      </form>
+          </form>
+        </main>
+      </div>
 
       <CharacterModal
         key={characterEditingIndex}
