@@ -14,7 +14,7 @@ export default async function BooksPage() {
 
   if (!data || data.books.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-3 text-center">
+      <div className="px-8 pt-8 flex flex-col items-center justify-center py-24 gap-3 text-center">
         <p className="font-serif text-parchment text-xl">{t("noBooksTitle")}</p>
         <p className="text-fog text-sm font-light">{t("noBooksSubtitle")}</p>
         <CreateBookModal />
@@ -22,5 +22,18 @@ export default async function BooksPage() {
     );
   }
 
-  return <BookGrid books={data.books} />;
+  return (
+    <div>
+      <div className="px-8 pt-8 pb-0">
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-fog mb-4">{t("theLibrary")}</p>
+        <h1 className="font-serif text-[44px] font-normal text-parchment leading-[1.1] mb-2">{t("yourBooks")}</h1>
+        <p className="font-serif-body italic text-[15px] text-fog mb-6">
+          {data.books.length} {data.books.length === 1 ? t("bookSingular") : t("bookPlural")} {t("inYourCollection")}
+        </p>
+      </div>
+      <div className="px-8 pt-6">
+        <BookGrid books={data.books} />
+      </div>
+    </div>
+  );
 }

@@ -15,11 +15,11 @@ export function BookView({ book }: BookViewProps) {
           </h1>
         </div>
         <div className="flex items-center gap-3 text-sm text-fog font-light">
-          <span>{book.author_name}</span>
+          <span>{book.author_name || "Unknown"}</span>
           <span>·</span>
-          <span>★ {parseFloat(book.rating).toFixed(1)}</span>
+          <span>★ {book.rating ? parseFloat(book.rating).toFixed(1) : "0"}</span>
           <span>·</span>
-          <span>{book.views} views</span>
+          <span>{book.views || 0} views</span>
         </div>
       </div>
 

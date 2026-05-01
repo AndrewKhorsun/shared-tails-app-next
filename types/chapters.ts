@@ -5,6 +5,7 @@ export interface Chapter {
   content: string;
   order_index: number;
   status: "draft" | "published" | "archived";
+  word_count: number;
   plan: string;
   created_at: string;
   updated_at: string;
