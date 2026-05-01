@@ -23,8 +23,17 @@ export default async function BooksPage() {
   }
 
   return (
-    <div className="px-8 pt-8">
-      <BookGrid books={data.books} />
+    <div>
+      <div className="px-8 pt-8 pb-0">
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-fog mb-4">{t("theLibrary")}</p>
+        <h1 className="font-serif text-[44px] font-normal text-parchment leading-[1.1] mb-2">{t("yourBooks")}</h1>
+        <p className="font-serif-body italic text-[15px] text-fog mb-6">
+          {data.books.length} {data.books.length === 1 ? t("bookSingular") : t("bookPlural")} {t("inYourCollection")}
+        </p>
+      </div>
+      <div className="px-8 pt-6">
+        <BookGrid books={data.books} />
+      </div>
     </div>
   );
 }

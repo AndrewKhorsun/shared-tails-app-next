@@ -48,7 +48,9 @@
     "continueWithGoogle": "Continue with Google"
   },
   "TopNav": {
-    "brandName": "Shared Tales"
+    "brandName": "Shared Tales",
+    "myBooks": "My Books",
+    "profile": "Profile"
   },
   "ProfileDropdown": {
     "profile": "Profile",
@@ -63,7 +65,20 @@
   },
   "BooksPage": {
     "noBooksTitle": "No books yet",
-    "noBooksSubtitle": "You haven't written anything yet — start your first story."
+    "noBooksSubtitle": "You haven't written anything yet — start your first story.",
+    "theLibrary": "The library",
+    "yourBooks": "Your books",
+    "bookSingular": "book",
+    "bookPlural": "books",
+    "inYourCollection": "in your collection"
+  },
+  "BookGrid": {
+    "filterAll": "All",
+    "filterInProgress": "In progress",
+    "filterComplete": "Complete",
+    "sortRecent": "Recently updated",
+    "sortTitle": "Title A–Z",
+    "chaptersShort": "ch"
   },
   "BookCard": {
     "editBook": "Edit book",
@@ -78,7 +93,10 @@
     "save": "Save",
     "saving": "Saving...",
     "delete": "Delete",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "chaptersSingular": "chapter",
+    "chaptersPlural": "chapters",
+    "chaptersShort": "ch"
   },
   "CreateBookModal": {
     "triggerLabel": "New Book",

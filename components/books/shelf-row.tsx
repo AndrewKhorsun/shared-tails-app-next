@@ -2,22 +2,24 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { api } from "@/lib/api";
 import { Book } from "@/types";
+import { useRouter } from "@/i18n/navigation";
+import { api } from "@/lib/api";
 import { Modal } from "@/components/ui/modal";
 
-interface BookCardProps {
+interface ShelfRowProps {
   book: Book;
 }
 
-export function BookCard({ book }: BookCardProps) {
-  const t = useTranslations("BookCard");
+export function ShelfRow({ book }: ShelfRowProps) {
+  const tGrid = useTranslations("BookGrid");
+  const tCard = useTranslations("BookCard");
   const router = useRouter();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [title, setTitle] = useState(book.title);
   const [description, setDescription] = useState(book.description ?? "");
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +42,10 @@ export function BookCard({ book }: BookCardProps) {
     setError(null);
     const { error } = await api.put<Book>(`/api/books/${book.id}`, { title, description });
     setIsLoading(false);
-    if (error) { setError(error); return; }
+    if (error) {
+      setError(error);
+      return;
+    }
     setEditOpen(false);
     router.refresh();
   };
@@ -49,20 +54,42 @@ export function BookCard({ book }: BookCardProps) {
     setIsLoading(true);
     const { error } = await api.delete<Book>(`/api/books/${book.id}`);
     setIsLoading(false);
-    if (error) { setError(error); return; }
+    if (error) {
+      setError(error);
+      return;
+    }
     setDeleteOpen(false);
     router.refresh();
   };
 
   return (
     <>
-      <div className="relative bg-card rounded-xl border border-border-soft hover:border-border-mid p-5 cursor-pointer transition-colors flex flex-col h-full min-h-[220px]">
-        <div className="absolute left-0 top-4 bottom-4 w-[3px] bg-amber/60 rounded-full" />
+      <Link
+        href={`/books/${book.id}`}
+        className="flex items-center gap-4 hover:bg-surface/50 border-b border-border-soft px-5 py-4 transition-colors"
+      >
+        <div className="w-2 h-2 rounded-full bg-amber flex-shrink-0" />
 
-        <div ref={dropdownRef} className="absolute top-3 right-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-medium text-parchment line-clamp-1">{book.title}</h3>
+          <p className="text-xs text-fog line-clamp-1">{book.description}</p>
+        </div>
+
+        <p className="font-mono text-sm text-fog flex-shrink-0">
+          {book.published_chapters || 0} / {book.total_chapters || 0} {tGrid("chaptersShort")}
+        </p>
+
+        <p className="font-mono text-[11px] text-fog flex-shrink-0">
+          {new Date(book.updated_at).toLocaleDateString()}
+        </p>
+
+        <div ref={dropdownRef} className="relative flex-shrink-0">
           <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="p-1 rounded-lg text-fog hover:text-parchment hover:bg-surface transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              setDropdownOpen(!dropdownOpen);
+            }}
+            className="p-1 rounded-lg text-fog hover:text-parchment hover:bg-elevated transition-colors"
           >
             <MoreVertical size={16} />
           </button>
@@ -70,7 +97,8 @@ export function BookCard({ book }: BookCardProps) {
           {dropdownOpen && (
             <div className="absolute right-0 top-full mt-1 w-32 bg-surface border border-border-soft rounded-lg shadow-lg overflow-hidden z-50">
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setEditOpen(true);
                   setDropdownOpen(false);
                 }}
@@ -81,7 +109,8 @@ export function BookCard({ book }: BookCardProps) {
               </button>
               <div className="border-t border-border-soft" />
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setDeleteOpen(true);
                   setDropdownOpen(false);
                 }}
@@ -93,31 +122,12 @@ export function BookCard({ book }: BookCardProps) {
             </div>
           )}
         </div>
+      </Link>
 
-        <Link href={`/books/${book.id}`} className="block flex-1">
-          <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-fog" />
-          <h3 className="font-serif text-[19px] text-parchment leading-[1.2] mt-1 mb-2">
-            {book.title}
-          </h3>
-          <p className="font-serif-body italic text-[14px] text-fog leading-relaxed line-clamp-3">
-            {book.description}
-          </p>
-        </Link>
-
-        <div className="flex justify-between items-center mt-auto pt-3 border-t border-border-soft">
-          <p className="font-mono text-[11px] text-fog">
-            <span className="text-parchment">{book.published_chapters || 0}/{book.total_chapters || 0}</span> {t("chaptersShort")}
-          </p>
-          <p className="font-mono text-[11px] text-fog">
-            <span className="text-parchment">{((book.total_word_count || 0) / 1000).toFixed(1)}k</span> w
-          </p>
-        </div>
-      </div>
-
-      <Modal isOpen={editOpen} onClose={() => setEditOpen(false)} title={t("editModalTitle")}>
+      <Modal isOpen={editOpen} onClose={() => setEditOpen(false)} title={tCard("editModalTitle")}>
         <form onSubmit={handleEdit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-fog font-light">{t("titleLabel")}</label>
+            <label className="text-xs text-fog font-light">{tCard("titleLabel")}</label>
             <input
               type="text"
               value={title}
@@ -127,7 +137,7 @@ export function BookCard({ book }: BookCardProps) {
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-fog font-light">{t("descriptionLabel")}</label>
+            <label className="text-xs text-fog font-light">{tCard("descriptionLabel")}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -137,27 +147,42 @@ export function BookCard({ book }: BookCardProps) {
           </div>
           {error && <p className="text-red-400 text-xs">{error}</p>}
           <div className="flex justify-end gap-2 pt-1">
-            <button type="button" onClick={() => setEditOpen(false)} className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer">
-              {t("cancel")}
+            <button
+              type="button"
+              onClick={() => setEditOpen(false)}
+              className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer"
+            >
+              {tCard("cancel")}
             </button>
-            <button type="submit" disabled={isLoading} className="px-4 py-2 rounded-lg text-sm bg-amber-dim text-parchment hover:bg-amber transition-colors disabled:opacity-50 cursor-pointer">
-              {isLoading ? t("saving") : t("save")}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-4 py-2 rounded-lg text-sm bg-amber-dim text-parchment hover:bg-amber transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              {isLoading ? tCard("saving") : tCard("save")}
             </button>
           </div>
         </form>
       </Modal>
 
-      <Modal isOpen={deleteOpen} onClose={() => setDeleteOpen(false)} title={t("deleteModalTitle")}>
+      <Modal isOpen={deleteOpen} onClose={() => setDeleteOpen(false)} title={tCard("deleteModalTitle")}>
         <p className="text-sm text-fog">
-          {t("deleteConfirmPrefix")} <span className="text-parchment">&ldquo;{book.title}&rdquo;</span>? {t("deleteCannotUndo")}
+          {tCard("deleteConfirmPrefix")} <span className="text-parchment">&ldquo;{book.title}&rdquo;</span>? {tCard("deleteCannotUndo")}
         </p>
         {error && <p className="text-red-400 text-xs">{error}</p>}
-        <div className="flex justify-end gap-2">
-          <button onClick={() => setDeleteOpen(false)} className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer">
-            {t("cancel")}
+        <div className="flex justify-end gap-2 mt-4">
+          <button
+            onClick={() => setDeleteOpen(false)}
+            className="px-4 py-2 rounded-lg text-sm text-fog hover:text-parchment transition-colors cursor-pointer"
+          >
+            {tCard("cancel")}
           </button>
-          <button onClick={handleDelete} disabled={isLoading} className="px-4 py-2 rounded-lg text-sm bg-red-900/60 text-red-300 hover:bg-red-900 transition-colors disabled:opacity-50 cursor-pointer">
-            {isLoading ? t("deleting") : t("delete")}
+          <button
+            onClick={handleDelete}
+            disabled={isLoading}
+            className="px-4 py-2 rounded-lg text-sm bg-red-900/60 text-red-300 hover:bg-red-900 transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {isLoading ? tCard("deleting") : tCard("delete")}
           </button>
         </div>
       </Modal>

@@ -48,7 +48,9 @@
     "continueWithGoogle": "Продовжити з Google"
   },
   "TopNav": {
-    "brandName": "Shared Tales"
+    "brandName": "Shared Tales",
+    "myBooks": "Мої книги",
+    "profile": "Профіль"
   },
   "ProfileDropdown": {
     "profile": "Профіль",
@@ -63,7 +65,20 @@
   },
   "BooksPage": {
     "noBooksTitle": "Ще немає книг",
-    "noBooksSubtitle": "Ви ще нічого не написали — почніть свою першу історію."
+    "noBooksSubtitle": "Ви ще нічого не написали — почніть свою першу історію.",
+    "theLibrary": "Бібліотека",
+    "yourBooks": "Ваші книги",
+    "bookSingular": "книга",
+    "bookPlural": "книги",
+    "inYourCollection": "у вашій колекції"
+  },
+  "BookGrid": {
+    "filterAll": "Усі",
+    "filterInProgress": "У розробці",
+    "filterComplete": "Завершено",
+    "sortRecent": "Нещодавно оновлено",
+    "sortTitle": "За назвою А–Я",
+    "chaptersShort": "розд"
   },
   "BookCard": {
     "editBook": "Редагувати книгу",
@@ -78,7 +93,10 @@
     "save": "Зберегти",
     "saving": "Збереження...",
     "delete": "Видалити",
-    "deleting": "Видалення..."
+    "deleting": "Видалення...",
+    "chaptersSingular": "розділ",
+    "chaptersPlural": "розділи",
+    "chaptersShort": "розд"
   },
   "CreateBookModal": {
     "triggerLabel": "Нова книга",

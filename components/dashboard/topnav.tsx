@@ -1,10 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { User } from "@/types/auth";
 import { ProfileDropdown } from "./profile-dropdown";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 
 export function TopNav({ user }: { user: User }) {
+  const t = useTranslations("TopNav");
   const pathname = usePathname();
 
   const isActive = (href: string) => {
@@ -22,25 +25,29 @@ export function TopNav({ user }: { user: User }) {
       <div className="flex items-center gap-3">
         <Link
           href="/books"
-          className={`text-sm rounded-lg px-3 py-1.5 transition-colors ${
+          className={`text-sm rounded-lg px-3 py-1.5 transition-colors cursor-pointer ${
             isActive("/books")
               ? "bg-surface text-parchment font-medium"
               : "text-fog hover:text-parchment"
           }`}
         >
-          My Books
+          {t("myBooks")}
         </Link>
 
         <Link
           href="/profile"
-          className={`text-sm rounded-lg px-3 py-1.5 transition-colors ${
+          className={`text-sm rounded-lg px-3 py-1.5 transition-colors cursor-pointer ${
             isActive("/profile")
               ? "bg-surface text-parchment font-medium"
               : "text-fog hover:text-parchment"
           }`}
         >
-          Profile
+          {t("profile")}
         </Link>
+
+        <div className="w-px h-5 bg-border-soft mx-1" />
+
+        <LocaleSwitcher />
 
         <div className="w-px h-5 bg-border-soft mx-1" />
 

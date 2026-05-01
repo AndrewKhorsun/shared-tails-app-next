@@ -9,9 +9,13 @@ export interface Book {
   author_name: string;
   created_at: string;
   updated_at: string;
-  category_id: number | null;
-  rating: string;
-  views: number;
+  category_id?: number | null;
+  rating?: string;
+  views?: number;
+  total_chapters?: number;
+  published_chapters?: number;
+  total_word_count?: number;
+  has_generating_chapter?: boolean;
 }
 
 export interface BooksResponse {
