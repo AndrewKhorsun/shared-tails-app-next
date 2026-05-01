@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { FileText, Pencil, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { Chapter } from "@/types";
