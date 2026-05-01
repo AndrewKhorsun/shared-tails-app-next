@@ -191,6 +191,10 @@
       "placeholder": "What happens. One sentence."
     }
   },
+  "CreateFirstChapter": {
+    "title": "Begin your story",
+    "subtitle": "Create your first chapter and start writing"
+  },
   "CreateChapterModal": {
     "modalTitle": "New Chapter",
     "titleLabel": "Title",

@@ -27,6 +27,7 @@ import type { ChapterEditorProps } from "./chapter-editor";
 export default function ChapterEditorClient({ onSave, isDirty, saveState, ...props }: ChapterEditorProps) {
   return (
     <MDXEditor
+      contentEditableClassName="prose prose-invert max-w-none focus:outline-none"
       {...props}
       plugins={[
         toolbarPlugin({

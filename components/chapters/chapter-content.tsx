@@ -34,7 +34,7 @@ export function ChapterContent({ bookId, chapterId, initialContent }: ChapterCon
   }, [bookId, chapterId]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="h-full">
       <ChapterEditor
         markdown={initialContent}
         onChange={handleChange}

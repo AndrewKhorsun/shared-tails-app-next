@@ -191,6 +191,10 @@
       "placeholder": "Що відбувається. Одне речення."
     }
   },
+  "CreateFirstChapter": {
+    "title": "Почни свою історію",
+    "subtitle": "Створи першу главу і починай писати"
+  },
   "CreateChapterModal": {
     "modalTitle": "Новий розділ",
     "titleLabel": "Назва",

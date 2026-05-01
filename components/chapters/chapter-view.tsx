@@ -20,11 +20,13 @@ export function ChapterView({ bookId, chapterId, initialContent }: ChapterViewPr
 
   if (!initialContent) {
     return (
-      <GenerationPanel
-        bookId={bookId}
-        chapterId={chapterId}
-        onContentGenerated={handleContentGenerated}
-      />
+      <div className="p-12 max-w-4xl mx-auto w-full">
+        <GenerationPanel
+          bookId={bookId}
+          chapterId={chapterId}
+          onContentGenerated={handleContentGenerated}
+        />
+      </div>
     );
   }
 

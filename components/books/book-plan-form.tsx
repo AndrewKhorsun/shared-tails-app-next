@@ -14,7 +14,7 @@ import { BookPlan } from "@/types";
 import { api } from "@/lib/api";
 import { useState } from "react";
 import { useActiveSection } from "@/hooks/use-active-section";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import { CharacterModal } from "./character-modal";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
@@ -163,12 +163,12 @@ export function BookPlanForm({ bookId, bookTitle, existingPlan }: BookPlanFormPr
         {/* Side TOC */}
         <aside className="w-[200px] shrink-0 fixed self-start" style={{ top: 52 + 32, paddingLeft: 32 }}>
           {bookTitle && (
-            <a
-              href={`../`}
-              className="inline-flex items-center gap-1.5 text-xs text-fog mb-4 no-underline"
+            <Link
+              href={`/books/${bookId}`}
+              className="inline-flex items-center gap-1.5 text-xs text-fog mb-4 no-underline hover:text-parchment transition-colors"
             >
               ← {bookTitle}
-            </a>
+            </Link>
           )}
           <div className="text-[11px] text-fog/67 tracking-[.14em] uppercase mb-3.5 font-semibold">
             {t("nav.bookPlan")}
